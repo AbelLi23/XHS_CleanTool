@@ -10,19 +10,20 @@ namespace CleanProApp
     {
         //Create a new global instance
         public static Xprinter Printer;
-        public enum UIPages { StartPage, FirstStep, SecondStep, ThirdStep, FourthStep }
         public int UnitSize = 30, GirdSize = 2;
         public static int P_ArrRow = 4, P_ArrCol = 4;
+        public enum UIPages { StartPage, FirstStep, SecondStep, ThirdStep, FourthStep }
+        public enum CleanMode { W1_C_PP, W1_C_P, W1C_PP, W1C_P, W0C_PP }//W1表示刮片能动, PP表示用小车来刮
 
         public FormRoot()
         {
-            this.MaximizeBox = false;
             this.Icon = AppRes.XHS;
+            this.MaximizeBox = false;
             this.ImeMode = ImeMode.Alpha;
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            this.StartPosition = FormStartPosition.CenterScreen;
             //this.DoubleBuffered = true;
             //this.Font = new Font("微软雅黑", 9);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
             this.ClientSize = new Size(800, 600);
             //Create a new global instance
@@ -33,6 +34,7 @@ namespace CleanProApp
 
         private void FormRoot_Load(object sender, EventArgs e)
         {
+            RenderUI(UIPages.StartPage);
             page_ShowStep(UIPages.StartPage);
 
             //Start Page
@@ -46,9 +48,9 @@ namespace CleanProApp
             var remainHeight = gBox_First.Height - 2 * pnl_mode.Height - pnl_mode.Location.Y - btn_FirstBack.Height;
             pnl_mode.Location = new Point(remainWidth / 2, pnl_mode.Location.Y + remainHeight / 2);
             pnl_direct.Location = new Point(pnl_mode.Location.X, pnl_mode.Location.Y + pnl_mode.Height);
-
             btn_FirstBack.Location = new Point(gBox_First.Location.X, gBox_First.Height - btn_FirstBack.Height);
             btn_FirstNext.Location = new Point(gBox_First.Width - btn_FirstNext.Width - gBox_First.Location.X, btn_FirstBack.Location.Y);
+
             //Second groupBox
             gBox_Second.Size = gBox_First.Size; gBox_Second.Location = gBox_First.Location;
             pnl_ptype.Location = new Point(pnl_mode.Location.X, pnl_ptype.Location.Y);
@@ -57,10 +59,9 @@ namespace CleanProApp
             remainWidth = gBox_Second.Width - pnl_P_Array.Width;
             remainHeight = gBox_Second.Height - pnl_ptype.Height - pnl_ptype.Location.Y - label_arrTip.Height - pnl_P_Array.Height - btn_SecondBack.Height;
             pnl_P_Array.Location = new Point(remainWidth / 2, label_arrTip.Location.Y + remainHeight / 2);
-            //comBox_P_Type.SelectedIndex = -1; comBox_P_Row.SelectedIndex = comBox_P_Col.SelectedIndex = 3;
-
             btn_SecondBack.Location = btn_FirstBack.Location;
             btn_SecondNext.Location = btn_FirstNext.Location;
+
             //Third groupBox
             gBox_Third.Size = gBox_First.Size; gBox_Third.Location = gBox_First.Location;
             remainHeight = gBox_Third.Height - pnl_AllPara.Height - pnl_AllPara.Location.Y - btn_ThirdBack.Height;
@@ -71,9 +72,9 @@ namespace CleanProApp
             //Graphics gg = gBox_Third.CreateGraphics();
             //gg.DrawLine(new Pen(Color.DarkOrange), new Point(gBox_Third.Location.X + pnl_AllPara.Location.X, gBox_Third.Location.Y + pnl_AllPara.Location.Y + pnl_Para2.Location.Y),
             //    new Point(gBox_Third.Location.X + pnl_AllPara.Location.X + pnl_AllPara.Width, gBox_Third.Location.Y + pnl_AllPara.Location.Y + pnl_Para2.Location.Y));
-
             btn_ThirdBack.Location = btn_FirstBack.Location;
             btn_ThirdNext.Location = btn_FirstNext.Location;
+
             //Fourth groupBox
             gBox_Fourth.Size = gBox_First.Size; gBox_Fourth.Location = gBox_First.Location;
             remainWidth = gBox_Fourth.Width - 2 * pnl_Actions.Width - 4 * pnl_Actions.Location.X;
@@ -82,8 +83,6 @@ namespace CleanProApp
             listView_CleanSteps.Location = new Point(pnl_Actions.Width + 2 * pnl_Actions.Location.X, pnl_Actions.Location.Y);
             pnl_EditStep.Location = new Point(listView_CleanSteps.Location.X + listView_CleanSteps.Width + pnl_Actions.Location.X, pnl_Actions.Location.Y);
             pnl_SerialNum.Location = new Point(btn_FirstNext.Location.X - pnl_SerialNum.Width, btn_FirstNext.Location.Y);
-            CreateActionList();
-
             btn_FourthBack.Location = btn_FirstBack.Location;
             btn_SaveProFile.Location = btn_FirstNext.Location;
         }
@@ -142,7 +141,11 @@ namespace CleanProApp
                 if (openProFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     Printer.F_ProFile = openProFileDialog.FileName;
-                    Printer.F_AnalyzeProcess(Printer.F_ReadProcess(Printer.F_ProFile));
+                    if (Printer.F_AnalyzeProcess(Printer.F_ReadProcess(Printer.F_ProFile))) Printer.IsInModifying = true;
+                    else
+                    {
+                        MessageBox.Show("不是有效的清洗流程文件!", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error); return;
+                    }
                 }
                 else return;
             }
@@ -158,26 +161,32 @@ namespace CleanProApp
             RadioButton radioBtn = (RadioButton)sender;
             if (rBtn_W_Enable == radioBtn)
             {
-                //pnl_direct.Visible = (radioBtn.Checked) ? true : false;
-                if (radioBtn.Checked)
-                {
-                    Printer.W_Enable = true;
-                    pnl_direct.Visible = true;
-                }
-                else pnl_direct.Visible = false;
+                Printer.W_Enable = pnl_direct.Visible = radioBtn.Checked;
+                Printer.WC_Enable = !radioBtn.Checked;
+            }
+            else if (rBtn_WC_Enable == radioBtn)
+            {
+                Printer.WC_Enable = pnl_direct.Visible = radioBtn.Checked;
+                Printer.W_Enable = !radioBtn.Checked;
             }
             else if (rBtn_W_Disable == radioBtn)
             {
-                Printer.W_Enable = (radioBtn.Checked) ? false : true;
+                Printer.W_Enable = Printer.WC_Enable = !radioBtn.Checked;
             }
             else if (rBtn_W_InPainter == radioBtn)
             {
-                Printer.WipeInXdirect = (radioBtn.Checked) ? true : false;
+                Printer.WipeInXdirect = radioBtn.Checked;
             }
             else if (rBtn_W_InWiper == radioBtn)
             {
-                Printer.WipeInXdirect = (radioBtn.Checked) ? false : true;
+                Printer.WipeInXdirect = !radioBtn.Checked;
             }
+
+            if (!Printer.W_Enable && !Printer.WC_Enable) Printer.CleanMode = CleanMode.W0C_PP;
+            else if (Printer.W_Enable && Printer.WipeInXdirect) Printer.CleanMode = CleanMode.W1_C_PP;
+            else if (Printer.W_Enable && !Printer.WipeInXdirect) Printer.CleanMode = CleanMode.W1_C_P;
+            else if (Printer.WC_Enable && Printer.WipeInXdirect) Printer.CleanMode = CleanMode.W1C_PP;
+            else if (Printer.WC_Enable && !Printer.WipeInXdirect) Printer.CleanMode = CleanMode.W1C_P;
         }
         private void btn_FirstBack_Click(object sender, EventArgs e)
         {
@@ -200,9 +209,13 @@ namespace CleanProApp
                     page_ShowStep(UIPages.SecondStep);
                     break;
                 case "btn_FourthBack":
-                    GetNewData(UIPages.FourthStep);
-                    RenderUI(UIPages.ThirdStep);
-                    page_ShowStep(UIPages.ThirdStep);
+                    if (DialogResult.Yes == MessageBox.Show("返回将不会保存当前所有修改动作,是否继续?", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk))
+                    {
+                        GetNewData(UIPages.FourthStep);
+                        RenderUI(UIPages.ThirdStep);
+                        page_ShowStep(UIPages.ThirdStep);
+                    }
+                    else return;
                     break;
             }
         }
@@ -218,6 +231,11 @@ namespace CleanProApp
                     break;
                 case "btn_SecondNext":
                     GetNewData(UIPages.SecondStep);
+                    if (Printer.P_Type == " ")
+                    {
+                        MessageBox.Show("请选择喷头类型!", "仔细点啦,兄dei...", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        return;
+                    }
                     RenderUI(UIPages.ThirdStep);
                     page_ShowStep(UIPages.ThirdStep);
                     break;
@@ -227,9 +245,6 @@ namespace CleanProApp
                     page_ShowStep(UIPages.FourthStep);
                     break;
                 case "btn_SaveProFile":
-                    //GetNewData(UIPages.FourthStep);
-                    //RenderUI(UIPages.FourthStep);
-                    //page_ShowStep(UIPages.FourthStep);
                     SaveProcessFile();
                     break;
             }
@@ -253,7 +268,7 @@ namespace CleanProApp
                     if (r > 0)
                     {
                         Label xHead = new Label();
-                        xHead.Text = (Printer.W_Enable) ? ("[P" + r.ToString() + "]") : ("[0" + r.ToString() + "]");
+                        xHead.Text = (Printer.W_Enable || Printer.WC_Enable) ? ("[P" + r.ToString() + "]") : ("[0" + r.ToString() + "]");
                         xHead.Font = label_arrTip.Font;
                         xHead.TextAlign = ContentAlignment.MiddleCenter;
                         xHead.Size = new Size(UnitSize, UnitSize);
@@ -271,7 +286,7 @@ namespace CleanProApp
                     if (c > 0)
                     {
                         Label yHead = new Label();
-                        yHead.Text = (Printer.W_Enable) ? ("[0" + c.ToString() + "]") : ("[" + (char)('A' + (c - 1)) + "]");
+                        yHead.Text = (Printer.W_Enable || Printer.WC_Enable) ? ("[0" + c.ToString() + "]") : ("[" + (char)('A' + (c - 1)) + "]");
                         yHead.Font = label_arrTip.Font;
                         yHead.TextAlign = ContentAlignment.MiddleCenter;
                         yHead.Size = new Size(UnitSize, UnitSize);
@@ -341,8 +356,9 @@ namespace CleanProApp
         }
         private void comBox_P_SizeCchanged(object sender, EventArgs e)
         {
-            //ComboBox combox = (ComboBox)sender;
-            Num_Used = 1; Printer.P_Array.Clear();
+            //第一次绘制pnl_P_Array是由选择行列的事件的自动触发完成;
+            Num_Used = 1; Num_NotUsed = "";
+            Printer.P_Array.Clear();
             pnl_P_Array.Controls.Clear();
 
             P_ArrRow = comBox_P_Row.SelectedIndex + 1;
@@ -472,6 +488,7 @@ namespace CleanProApp
         }
         private void btn_SetPumpPara_Click(object sender, EventArgs e)
         {
+            //更新数据的主体
             if (rBtn_M_Set.Checked)
             {
                 if (chkBox_HoldTime.Checked)
@@ -514,10 +531,6 @@ namespace CleanProApp
                 List<string> items = new List<string>(Printer.C_LevelMark);
                 //Printer.C_Level = new List<int>(items.Count);
                 comBox_Position.DataSource = items; comBox_Position.SelectedIndex = -1;
-
-                List<string> items2 = new List<string>();
-                for (int i = 1; i < 100 + 1; i++) items2.Add(i.ToString());
-                comBox_microPos.DataSource = items2; comBox_microPos.SelectedIndex = -1;
             }
             else if (rBtn_P_Set == radioBtn)
             {
@@ -530,16 +543,22 @@ namespace CleanProApp
 
                 List<string> items = new List<string>();
                 //Printer.P_XPos = new List<int>(items.Count);
-                for (int pn = 0; pn < Printer.P_Counts; pn++)
+                if (CleanMode.W1_C_PP == Printer.CleanMode || CleanMode.W0C_PP == Printer.CleanMode || CleanMode.W1C_PP == Printer.CleanMode)
                 {
-                    items.Add((pn + 1).ToString() + "号喷头刮墨前位置");
-                    items.Add((pn + 1).ToString() + "号喷头刮墨后位置");
+                    for (int pn = 0; pn < Printer.P_Counts; pn++)
+                    {
+                        items.Add((pn + 1).ToString() + "号喷头刮墨前");
+                        items.Add((pn + 1).ToString() + "号喷头刮墨后");
+                    }
+                }
+                else
+                {
+                    for (int pn = 0; pn < Printer.P_Counts; pn++)
+                    {
+                        items.Add((pn + 1).ToString() + "号喷头刮墨");
+                    }
                 }
                 comBox_Position.DataSource = items; comBox_Position.SelectedIndex = -1;
-
-                List<string> items2 = new List<string>();
-                for (int i = 1; i < 100 + 1; i++) items2.Add(i.ToString());
-                comBox_microPos.DataSource = items2; comBox_microPos.SelectedIndex = -1;
             }
             else if (rBtn_W_Set == radioBtn)
             {
@@ -551,18 +570,17 @@ namespace CleanProApp
                 label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
 
                 List<string> items = new List<string>();
-                //Printer.W_YPos = new List<int>(items.Count);
-                for (int pn = 0; pn < Printer.P_Counts; pn++)
+                //Printer.W_YPos = new List<int>(items.Count); 刮片只考虑一个位置
+                for (int wn = 0; wn < Printer.P_Counts; wn++)
                 {
-                    items.Add((pn + 1).ToString() + "号喷头刮墨位置");
+                    items.Add((wn + 1).ToString() + "号喷头刮墨");
                 }
                 comBox_Position.DataSource = items; comBox_Position.SelectedIndex = -1;
-
-                List<string> items2 = new List<string>();
-                for (int i = 1; i < 100 + 1; i++) items2.Add(i.ToString());
-                comBox_microPos.DataSource = items2; comBox_microPos.SelectedIndex = -1;
             }
             txtBox_Position.Text = "";
+            List<string> items2 = new List<string>();
+            for (int i = 1; i < 100 + 1; i++) items2.Add(i.ToString());
+            comBox_microPos.DataSource = items2; comBox_microPos.SelectedIndex = -1;
         }
         private void trkBar_Para2_ValueChanged(object sender, EventArgs e)
         {
@@ -609,11 +627,10 @@ namespace CleanProApp
         }
         private void btn_SetAxisPara_Click(object sender, EventArgs e)
         {
+            //更新数据的主体
             if (rBtn_C_Set.Checked)
             {
                 Printer.C_Speed = trkBar_Velocity.Value;
-                //Printer.C_Level = new List<int>(comBox_Position.Items.Count);
-                //for (int c = 0; c < comBox_Position.Items.Count; c++) Printer.C_Level.Add(0);
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.C_Level[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
@@ -621,8 +638,6 @@ namespace CleanProApp
             else if (rBtn_P_Set.Checked)
             {
                 Printer.P_Speed = trkBar_Velocity.Value;
-                //Printer.P_XPos = new List<int>(comBox_Position.Items.Count);
-                //for (int p = 0; p < comBox_Position.Items.Count; p++) Printer.P_XPos.Add(0);
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.P_XPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
@@ -630,8 +645,6 @@ namespace CleanProApp
             else if (rBtn_W_Set.Checked)
             {
                 Printer.W_Speed = trkBar_Velocity.Value;
-                //Printer.W_YPos = new List<int>(comBox_Position.Items.Count);
-                //for (int w = 0; w < comBox_Position.Items.Count; w++) Printer.W_YPos.Add(0);
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.W_YPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
@@ -658,13 +671,20 @@ namespace CleanProApp
                     else
                     {
                         var pn = int.Parse(stepTag.Substring(1, 1));
-                        if (1 == int.Parse(stepTag.Substring(2, 1)))
+                        if (CleanMode.W1_C_PP == Printer.CleanMode || CleanMode.W0C_PP == Printer.CleanMode || CleanMode.W1C_PP == Printer.CleanMode)
                         {
-                            SingleStep = stepTag.Substring(0, 2) + Printer.P_XPos[2 * pn - 2].ToString();
+                            if (1 == int.Parse(stepTag.Substring(2, 1)))
+                            {
+                                SingleStep = stepTag.Substring(0, 2) + Printer.P_XPos[2 * pn - 2].ToString();
+                            }
+                            else if (2 == int.Parse(stepTag.Substring(2, 1)))
+                            {
+                                SingleStep = stepTag.Substring(0, 2) + Printer.P_XPos[2 * pn - 1].ToString();
+                            }
                         }
-                        else if (2 == int.Parse(stepTag.Substring(2, 1)))
+                        else
                         {
-                            SingleStep = stepTag.Substring(0, 2) + Printer.P_XPos[2 * pn - 1].ToString();
+                            SingleStep = stepTag + Printer.P_XPos[pn - 1].ToString();
                         }
                     }
                     break;
@@ -695,111 +715,145 @@ namespace CleanProApp
             }
             return (Head + SingleStep + Tail);
         }
-        private List<string> CreateProcessTemplate(int TemplateId)
+        private List<string> CreateProcessTemplate(CleanMode mode)
         {
             List<string> ProcessTemplate = new List<string>();
-            switch (TemplateId)
+            // ① 设定小车速度
+            ProcessTemplate.Add(AddSingleStep("Pp"));
+            // ② 小车回到原点
+            ProcessTemplate.Add((AddSingleStep("P0")));
+            // ③ 墨栈到吸墨位
+            ProcessTemplate.Add(AddSingleStep("Cn0"));
+            // ④ 墨泵开始吸墨
+            ProcessTemplate.Add(AddSingleStep("M1"));
+            // ⑤ 增加保压延时
+            ProcessTemplate.Add(AddSingleStep("Nr0"));
+            // ⑥ 墨栈回到原点
+            ProcessTemplate.Add(AddSingleStep("Cn3"));
+            // ⑦ 墨泵吸走废墨
+            ProcessTemplate.Add(AddSingleStep("M0"));
+            switch (Printer.CleanMode)
             {
-                case 1:
-                    // ① 设定小车速度
-                    ProcessTemplate.Add(AddSingleStep("Pp"));
-                    // ② 小车回到原点
-                    ProcessTemplate.Add((AddSingleStep("P0")));
-                    // ③ 墨栈到吸墨位
-                    ProcessTemplate.Add(AddSingleStep("Cn0"));
-                    // ④ 墨泵开始吸墨
-                    ProcessTemplate.Add(AddSingleStep("M1"));
-                    // ⑤ 增加保压延时
-                    ProcessTemplate.Add(AddSingleStep("Nr0"));
-                    // ⑥ 墨栈回到原点
-                    ProcessTemplate.Add(AddSingleStep("Cn3"));
-                    // ⑦ 墨泵吸走废墨
-                    ProcessTemplate.Add(AddSingleStep("M0"));
+                case CleanMode.W1_C_PP:
                     // ⑧ 开始刮墨流程
                     for (int n = 0; n < Printer.CleanSequence.Count; n++)
                     {
                         // 小车到喷头刮墨前位置
-                        var tmp1 = "P" + Printer.CleanSequence[n].ToString() + "1";
-                        ProcessTemplate.Add(AddSingleStep(tmp1));
+                        var tmpH = "P" + Printer.CleanSequence[n].ToString() + "1";
+                        ProcessTemplate.Add(AddSingleStep(tmpH));
                         // 刮片到指定喷头刮墨位
                         var wn = "Wn" + Printer.CleanSequence[n].ToString();
                         ProcessTemplate.Add(AddSingleStep(wn));
                         // 小车到喷头刮墨后位置
-                        var tmp2 = "P" + Printer.CleanSequence[n].ToString() + "2";
-                        ProcessTemplate.Add(AddSingleStep(tmp2));
+                        var tmpT = "P" + Printer.CleanSequence[n].ToString() + "2";
+                        ProcessTemplate.Add(AddSingleStep(tmpT));
                         // 刮片再次回到原点位置
                         ProcessTemplate.Add(AddSingleStep("Wn0"));
                     }
-                    // ⑨ 小车回到原点
-                    ProcessTemplate.Add((AddSingleStep("P0")));
-                    // ⑩ 墨栈到闪喷位
-                    ProcessTemplate.Add((AddSingleStep("Cn4")));
-                    // ⑩ 闪喷开始工作
-                    ProcessTemplate.Add((AddSingleStep("V")));
-                    // ⑩ 墨栈再回原点
-                    ProcessTemplate.Add(AddSingleStep("Cn3"));
-                    // ⑩ 再次吸走废墨
-                    ProcessTemplate.Add(AddSingleStep("M0"));
                     break;
-                case 2:
+                case CleanMode.W0C_PP:
+                    for (int n = 0; n < Printer.CleanSequence.Count; n++)
+                    {
+                        // 小车到喷头刮墨前位置
+                        var tmpH = "P" + Printer.CleanSequence[n].ToString() + "1";
+                        ProcessTemplate.Add(AddSingleStep(tmpH));
+                        // 墨栈到刮墨位置
+                        var cnU = string.Format("C{0}1", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnU));
+                        // 小车到喷头刮墨后位置
+                        var tmpT = "P" + Printer.CleanSequence[n].ToString() + "2";
+                        ProcessTemplate.Add(AddSingleStep(tmpT));
+                        // 墨栈到原点位置
+                        var cnD = string.Format("C{0}3", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnD));
+                    }
+                    break;
+                case CleanMode.W1_C_P:
+                    for (int n = 0; n < Printer.CleanSequence.Count; n++)
+                    {
+                        // 刮片到达刮墨位置
+                        var wn = "Wn" + Printer.CleanSequence[n].ToString();
+                        ProcessTemplate.Add(AddSingleStep(wn));
+                        // 小车到达刮墨位置
+                        var pn = "P" + Printer.CleanSequence[n].ToString();
+                        ProcessTemplate.Add(AddSingleStep(pn));
+                        // 刮片回到原点
+                        ProcessTemplate.Add(AddSingleStep("Wn0"));
+                    }
+                    break;
+                case CleanMode.W1C_P:
+                    for (int n = 0; n < Printer.CleanSequence.Count; n++)
+                    {
+                        // 刮片到达刮墨位置
+                        var wn = "Wn" + Printer.CleanSequence[n].ToString();
+                        ProcessTemplate.Add(AddSingleStep(wn));
+                        // 小车到达刮墨位置 
+                        var pn = "P" + Printer.CleanSequence[n].ToString();
+                        ProcessTemplate.Add(AddSingleStep(pn));
+                        // 墨栈到刮墨位置
+                        var cnU = string.Format("C{0}1", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnU));
+                        // 刮片回到原点
+                        ProcessTemplate.Add(AddSingleStep("Wn0"));
+                        // 墨栈回到原点
+                        var cnD = string.Format("C{0}3", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnD));
+                    }
+                    break;
+                case CleanMode.W1C_PP:
+                    for (int n = 0; n < Printer.CleanSequence.Count; n++)
+                    {
+                        // 小车到喷头刮墨前位置
+                        var tmpH = "P" + Printer.CleanSequence[n].ToString() + "1";
+                        ProcessTemplate.Add(AddSingleStep(tmpH));
+                        // 刮片到达刮墨位置
+                        var wn = "Wn" + Printer.CleanSequence[n].ToString();
+                        ProcessTemplate.Add(AddSingleStep(wn));
+                        // 墨栈到刮墨位置
+                        var cnU = string.Format("C{0}1", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnU));
+                        // 小车到喷头刮墨后位置
+                        var tmpT = "P" + Printer.CleanSequence[n].ToString() + "2";
+                        ProcessTemplate.Add(AddSingleStep(tmpT));
+                        // 墨栈回到原点
+                        var cnD = string.Format("C{0}3", Printer.CleanSequence[n]);
+                        ProcessTemplate.Add(AddSingleStep(cnD));
+                        // 刮片回到原点
+                        ProcessTemplate.Add(AddSingleStep("Wn0"));
+                    }
                     break;
             }
+            // ⑨ 小车回到原点
+            ProcessTemplate.Add((AddSingleStep("P0")));
+            // ⑩ 墨栈到闪喷位
+            ProcessTemplate.Add((AddSingleStep("Cn4")));
+            // ⑩ 闪喷开始工作
+            ProcessTemplate.Add((AddSingleStep("V")));
+            // ⑩ 墨栈再回原点
+            ProcessTemplate.Add(AddSingleStep("Cn3"));
+            // ⑩ 再次吸走废墨
+            ProcessTemplate.Add(AddSingleStep("M0"));
             return ProcessTemplate;
         }
+
         private void CreateActionList()
         {
+            listView_CleanSteps.Columns.Clear();//清除列头
             listView_CleanSteps.Columns.Add("顺序", listView_CleanSteps.Width / 10, HorizontalAlignment.Center);
             listView_CleanSteps.Columns.Add("动作部件", listView_CleanSteps.Width / 9, HorizontalAlignment.Center);
             listView_CleanSteps.Columns.Add("动作描述", listView_CleanSteps.Width, HorizontalAlignment.Left);
             //列宽控制？
         }
-        private string ExplainAction(string act)
-        {
-            string description = act;
-            switch (act.Substring(1, 1))
-            {
-                case "P":
-                    if ("p" == act.Substring(2, 1))
-                    {
-
-                    }
-                    else if ("0" == act.Substring(2, 1))
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                    break;
-                case "W":
-                    break;
-                case "C":
-                    break;
-                case "M":
-                    break;
-                case "V":
-                    break;
-                case "N":
-                    break;
-            }
-            return description;
-        }
         private void FlushActionList(List<string> acts)
         {
-            var Begin = 1;
-            listView_CleanSteps.Items.Clear();//Clear previous Items Info
+            CreateActionList();
+            listView_CleanSteps.Items.Clear();
+            var Begin = 1;//清除行重新填写
             listView_CleanSteps.BeginUpdate();
             listView_CleanSteps.SmallImageList = imageInSteps;
             foreach (string act in acts)
             {
                 ListViewItem singleRow = new ListViewItem();
-                //if ("K" == act.Substring(1, 1))
-                //{
-                //    singleRow.Text = Begin.ToString(); Begin++;
-                //    singleRow.SubItems.Add("设定K值");
-                //    singleRow.ImageIndex = 0;
-                //}
                 if ("P" == act.Substring(1, 1))
                 {
                     singleRow.Text = Begin.ToString(); Begin++;
@@ -847,6 +901,73 @@ namespace CleanProApp
             }
             listView_CleanSteps.EndUpdate();
         }
+        private string ExplainAction(string act)
+        {
+            string description = act;
+            act = act.Trim('@', ';');
+            switch (act.Substring(0, 1))
+            {
+                case "P":
+                    if ("p" == act.Substring(1, 1))
+                    {
+                        var Vel = 0; int.TryParse(act.Substring(2), out Vel);
+                        if (Vel == 0) description = "小车速度设定为:【最慢】";
+                        else description = string.Format("小车速度设定为:【{0}】", (0.1 * Vel).ToString("#0.0") + "(m/s)");
+                    }
+                    else if ("0" == act.Substring(1, 1))
+                    {
+                        description = "小车到达【原点位置】";
+                    }
+                    else
+                    {
+                        var pn = 0; int.TryParse(act.Substring(1, 1), out pn);
+                        if (CleanMode.W1_C_PP == Printer.CleanMode || CleanMode.W0C_PP == Printer.CleanMode || CleanMode.W1C_PP == Printer.CleanMode)
+                        {
+                            if (int.Parse(act.Substring(2)) == Printer.P_XPos[2 * pn - 2])
+                                description = string.Format("小车到达【{0}{1}位置】", pn, "号喷头刮墨前");
+                            else if (int.Parse(act.Substring(2)) == Printer.P_XPos[2 * pn - 1])
+                                description = string.Format("小车到达【{0}{1}位置】", pn, "号喷头刮墨后");
+                        }
+                        else if (CleanMode.W1_C_P == Printer.CleanMode || CleanMode.W1C_P == Printer.CleanMode)
+                        {
+                            description = string.Format("小车到达【{0}{1}位置】", pn, "号喷头刮墨");
+                        }
+                    }
+                    break;
+                case "W":
+                    var wn = 0; int.TryParse(act.Substring(2), out wn);
+                    if (wn == 0) description = "刮片到达【原点位置】";
+                    else description = string.Format("刮片到达【{0}{1}位置】", wn, "号喷头刮墨");
+                    break;
+                case "C":
+                    var cn = 3; int.TryParse(act.Substring(2), out cn);
+                    description = string.Format("墨栈到达【{0}高度】", Printer.C_LevelMark[cn]);
+                    break;
+                case "M":
+                    if ("M0999" == act) description = string.Format("墨泵吸墨【{0}秒】", Printer.M_OnlyWorkTime);
+                    else
+                    {
+                        description = string.Format("墨泵工作【{0}级强度】【单次运转{1}秒】【单次停止{2}秒】【循环{3}次】",
+                            Printer.M_Strength, Printer.M_WorkTime, Printer.M_HoldTime, Printer.M_CycleNum);
+                    }
+                    break;
+                case "V":
+                    description = string.Format("闪喷工作【{0}级强度】【单次闪喷{1}秒】【单次停止{2}秒】【循环{3}次】",
+                            Printer.V_Strength, Printer.V_WorkTime, Printer.V_HoldTime, Printer.V_CycleNum);
+                    break;
+                case "N":
+                    description = string.Format("延时【{0}秒】", Printer.N_WaitTime);
+                    break;
+            }
+            return description;
+        }
+        private void InsertPreKSet()
+        {
+            //预先设定K值的部分
+            Printer.CleanProcess.Insert(0, Printer.p_IndexStr);
+            Printer.CleanProcess.Insert(0, Printer.w_IndexStr);
+            Printer.CleanProcess.Insert(0, string.Format(@"@B{0}{1};", Printer.P_Type, Printer.ProcessName));
+        }
         private void SaveProcessFile()
         {
             saveProFileDialog.InitialDirectory = Printer.F_defaultPath;
@@ -856,6 +977,8 @@ namespace CleanProApp
             if (saveProFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string ProFile = saveProFileDialog.FileName;
+                InsertPreKSet();//追加流程头
+                Printer.CleanProcess.Add(@"@En0;");//追加流程尾
                 Printer.F_SaveProcess(Printer.CleanProcess, ProFile);
             }
         }
@@ -867,11 +990,18 @@ namespace CleanProApp
             switch (page)
             {
                 case UIPages.StartPage:
+                    var DateNow = DateTime.Now.ToString("yyyy-MM-dd");
+                    var WeekDay = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
+                    toolStripStatusLabel1.Text = string.Format("今天是 {0} [ {1} ]", DateNow, WeekDay);
+                    toolStripStatusLabel1.Alignment = ToolStripItemAlignment.Right;
                     break;
                 case UIPages.FirstStep:
-                    if (Printer.W_Enable) rBtn_W_Enable.Checked = true; else rBtn_W_Disable.Checked = true;
-                    pnl_direct.Visible = (rBtn_W_Enable.Checked) ? true : false;
-                    if (Printer.WipeInXdirect) rBtn_W_InPainter.Checked = true; else rBtn_W_InWiper.Checked = true;
+                    pnl_direct.Visible = Printer.W_Enable || Printer.WC_Enable;
+                    rBtn_W_Enable.Checked = Printer.W_Enable;
+                    rBtn_WC_Enable.Checked = Printer.WC_Enable;
+                    rBtn_W_Disable.Checked = !Printer.W_Enable && !Printer.WC_Enable;
+                    rBtn_W_InPainter.Checked = Printer.WipeInXdirect;
+                    rBtn_W_InWiper.Checked = !Printer.WipeInXdirect;
                     break;
                 case UIPages.SecondStep:
                     if (Printer.P_Type != " ")
@@ -887,23 +1017,46 @@ namespace CleanProApp
                     if (P_ArrCol != 0) comBox_P_Col.SelectedIndex = P_ArrCol - 1;
                     else comBox_P_Col.SelectedIndex = 3;
 
-                    if (P_ArrRow != 0 && P_ArrCol != 0)
+                    if (Printer.IsInModifying)
                     {
-                        Num_Used = 1; Printer.P_Array.Clear();
-                        pnl_P_Array.Controls.Clear();
-                        draw_GirdLine(); draw_PainterArr();
+                        for (int n = 0; n < Printer.P_Counts; n++)
+                        {
+                            foreach (Label plabel in pnl_P_Array.Controls)
+                            {
+                                if (Printer.W_Enable || Printer.WC_Enable)
+                                {
+                                    if (!string.IsNullOrEmpty(Printer.w_IndexStr) && !string.IsNullOrEmpty(Printer.p_IndexStr))
+                                    {
+                                        var rowinfo = Printer.w_IndexStr.Trim('@', 'w', '0', ';');
+                                        var colinfo = Printer.p_IndexStr.Trim('@', 'x', '0', ';');
+                                        var name = string.Format("label_P{0}{1}", rowinfo.Substring(rowinfo.Length - n - 1, 1), colinfo.Substring(colinfo.Length - n - 1, 1));
+                                        if (name == plabel.Name) { plabel.Text = string.Format("{0}#", n + 1); plabel.BackColor = Color.LightSeaGreen; }
+                                    }
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(Printer.w_IndexStr) && !string.IsNullOrEmpty(Printer.p_IndexStr))
+                                    {
+                                        var rowinfo = Printer.w_IndexStr.Trim('@', 'w', '0', ';');
+                                        var colinfo = Printer.p_IndexStr.Trim('@', 'x', '0', ';');
+                                        var name = string.Format("label_P{0}{1}", colinfo.Substring(colinfo.Length - n - 1, 1), rowinfo.Substring(rowinfo.Length - n - 1, 1));
+                                        if (name == plabel.Name) { plabel.Text = string.Format("{0}#", n + 1); plabel.BackColor = Color.LightSeaGreen; }
+                                    }
+                                }
+                            }
+                        }
+                        Num_Used = Printer.P_Counts + 1; Printer.IsInModifying = false;
                     }
                     break;
                 case UIPages.ThirdStep:
-                    //rBtn_M_Set.Checked = true; rBtn_C_Set.Checked = true;
+                    rBtn_M_Set.Checked = true; rBtn_C_Set.Checked = true;
                     this.rBtn_Para1_CheckedChanged(rBtn_M_Set, null);
                     this.rBtn_Para2_CheckedChanged(rBtn_C_Set, null);
                     break;
                 case UIPages.FourthStep:
-                    //List<string> steps = Printer.F_ReadProcess(Printer.F_defaultPath + "\\CL_SJF_2H_20200924.txt");
-                    List<string> steps = CreateProcessTemplate(1);
-                    Printer.CleanProcess = steps;//Not completely
-                    FlushActionList(steps);
+                    txtBox_SerialNum.Text = Printer.ProcessName;
+                    txtBox_SerialNum.AutoCompleteCustomSource.Add(Printer.ProcessName);
+                    FlushActionList(Printer.CleanProcess);
                     break;
             }
         }
@@ -914,25 +1067,36 @@ namespace CleanProApp
                 case UIPages.StartPage:
                     break;
                 case UIPages.FirstStep:
-                    //this.rBtn_W_CheckedChanged(null, null);
-                    Printer.W_Enable = (rBtn_W_Enable.Checked) ? true : false;
-                    Printer.WipeInXdirect = (rBtn_W_InPainter.Checked) ? true : false;
+                    Printer.W_Enable = rBtn_W_Enable.Checked;
+                    Printer.WC_Enable = rBtn_WC_Enable.Checked;
+                    Printer.WipeInXdirect = rBtn_W_InPainter.Checked;
                     break;
                 case UIPages.SecondStep:
-                    this.comBox_P_Type_SelectedIndexChanged(null, null);
+                    this.comBox_P_Type_SelectedIndexChanged(comBox_P_Type, null);
                     P_ArrRow = (comBox_P_Row.SelectedItem != null) ? comBox_P_Row.SelectedIndex + 1 : 4;
                     P_ArrCol = (comBox_P_Col.SelectedItem != null) ? comBox_P_Col.SelectedIndex + 1 : 4;
                     Printer.P_AnalyzeArray();
-                    //Printer.P_XPos = (Printer.P_Counts != 0) ? new List<int>(2 * Printer.P_Counts) : new List<int>(2 * P_ArrRow * P_ArrCol);
-                    //Printer.W_YPos = (Printer.P_Counts != 0) ? new List<int>(Printer.P_Counts) : new List<int>(2 * P_ArrRow * P_ArrCol);
                     break;
                 case UIPages.ThirdStep:
+                    List<string> steps = CreateProcessTemplate(Printer.CleanMode);
+                    Printer.CleanProcess = steps;//Not completely
                     break;
                 case UIPages.FourthStep:
+                    Printer.ProcessName = txtBox_SerialNum.Text;
                     break;
             }
         }
         #endregion
+
+        private void FormRoot_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult.OK == MessageBox.Show("不玩了吗?", "温馨提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
+            {
+                e.Cancel = false;
+            }
+            else
+                e.Cancel = true;
+        }
 
     }
 }

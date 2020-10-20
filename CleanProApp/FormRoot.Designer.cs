@@ -36,12 +36,14 @@
             this.rBtn_W_InWiper = new System.Windows.Forms.RadioButton();
             this.rBtn_W_InPainter = new System.Windows.Forms.RadioButton();
             this.pnl_mode = new System.Windows.Forms.Panel();
+            this.rBtn_WC_Enable = new System.Windows.Forms.RadioButton();
             this.label_W_mode = new System.Windows.Forms.Label();
             this.rBtn_W_Enable = new System.Windows.Forms.RadioButton();
             this.rBtn_W_Disable = new System.Windows.Forms.RadioButton();
             this.btn_FirstNext = new System.Windows.Forms.Button();
             this.btn_FirstBack = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveProFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.btn_NewFile = new System.Windows.Forms.Button();
             this.btn_Modify = new System.Windows.Forms.Button();
@@ -126,6 +128,7 @@
             this.gBox_First.SuspendLayout();
             this.pnl_direct.SuspendLayout();
             this.pnl_mode.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.gBox_Second.SuspendLayout();
             this.pnl_ptype.SuspendLayout();
             this.gBox_Third.SuspendLayout();
@@ -154,7 +157,7 @@
             this.gBox_First.Margin = new System.Windows.Forms.Padding(0);
             this.gBox_First.Name = "gBox_First";
             this.gBox_First.Padding = new System.Windows.Forms.Padding(0);
-            this.gBox_First.Size = new System.Drawing.Size(550, 165);
+            this.gBox_First.Size = new System.Drawing.Size(550, 340);
             this.gBox_First.TabIndex = 0;
             this.gBox_First.TabStop = false;
             this.gBox_First.Text = "确认工作模式:";
@@ -164,17 +167,17 @@
             this.pnl_direct.Controls.Add(this.label_W_direct);
             this.pnl_direct.Controls.Add(this.rBtn_W_InWiper);
             this.pnl_direct.Controls.Add(this.rBtn_W_InPainter);
-            this.pnl_direct.Location = new System.Drawing.Point(15, 69);
+            this.pnl_direct.Location = new System.Drawing.Point(15, 165);
             this.pnl_direct.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_direct.Name = "pnl_direct";
-            this.pnl_direct.Size = new System.Drawing.Size(520, 50);
+            this.pnl_direct.Size = new System.Drawing.Size(520, 105);
             this.pnl_direct.TabIndex = 9;
             // 
             // label_W_direct
             // 
             this.label_W_direct.AutoSize = true;
             this.label_W_direct.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_W_direct.Location = new System.Drawing.Point(25, 12);
+            this.label_W_direct.Location = new System.Drawing.Point(60, 12);
             this.label_W_direct.Margin = new System.Windows.Forms.Padding(0);
             this.label_W_direct.Name = "label_W_direct";
             this.label_W_direct.Size = new System.Drawing.Size(93, 25);
@@ -186,13 +189,13 @@
             // 
             this.rBtn_W_InWiper.AutoSize = true;
             this.rBtn_W_InWiper.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_W_InWiper.Location = new System.Drawing.Point(331, 10);
+            this.rBtn_W_InWiper.Location = new System.Drawing.Point(189, 55);
             this.rBtn_W_InWiper.Margin = new System.Windows.Forms.Padding(0);
             this.rBtn_W_InWiper.Name = "rBtn_W_InWiper";
-            this.rBtn_W_InWiper.Size = new System.Drawing.Size(163, 29);
+            this.rBtn_W_InWiper.Size = new System.Drawing.Size(194, 29);
             this.rBtn_W_InWiper.TabIndex = 4;
             this.rBtn_W_InWiper.TabStop = true;
-            this.rBtn_W_InWiper.Text = "按走纸方向刮墨";
+            this.rBtn_W_InWiper.Text = "小车停止[刮片刮墨]";
             this.rBtn_W_InWiper.UseVisualStyleBackColor = true;
             this.rBtn_W_InWiper.CheckedChanged += new System.EventHandler(this.rBtn_W_CheckedChanged);
             // 
@@ -200,32 +203,47 @@
             // 
             this.rBtn_W_InPainter.AutoSize = true;
             this.rBtn_W_InPainter.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_W_InPainter.Location = new System.Drawing.Point(143, 10);
+            this.rBtn_W_InPainter.Location = new System.Drawing.Point(189, 10);
             this.rBtn_W_InPainter.Margin = new System.Windows.Forms.Padding(0);
             this.rBtn_W_InPainter.Name = "rBtn_W_InPainter";
-            this.rBtn_W_InPainter.Size = new System.Drawing.Size(163, 29);
+            this.rBtn_W_InPainter.Size = new System.Drawing.Size(194, 29);
             this.rBtn_W_InPainter.TabIndex = 6;
             this.rBtn_W_InPainter.TabStop = true;
-            this.rBtn_W_InPainter.Text = "按小车方向刮墨";
+            this.rBtn_W_InPainter.Text = "刮片停止[小车刮墨]";
             this.rBtn_W_InPainter.UseVisualStyleBackColor = true;
             this.rBtn_W_InPainter.CheckedChanged += new System.EventHandler(this.rBtn_W_CheckedChanged);
             // 
             // pnl_mode
             // 
+            this.pnl_mode.Controls.Add(this.rBtn_WC_Enable);
             this.pnl_mode.Controls.Add(this.label_W_mode);
             this.pnl_mode.Controls.Add(this.rBtn_W_Enable);
             this.pnl_mode.Controls.Add(this.rBtn_W_Disable);
             this.pnl_mode.Location = new System.Drawing.Point(15, 20);
             this.pnl_mode.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_mode.Name = "pnl_mode";
-            this.pnl_mode.Size = new System.Drawing.Size(520, 50);
+            this.pnl_mode.Size = new System.Drawing.Size(520, 145);
             this.pnl_mode.TabIndex = 8;
+            // 
+            // rBtn_WC_Enable
+            // 
+            this.rBtn_WC_Enable.AutoSize = true;
+            this.rBtn_WC_Enable.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.rBtn_WC_Enable.Location = new System.Drawing.Point(170, 55);
+            this.rBtn_WC_Enable.Margin = new System.Windows.Forms.Padding(0);
+            this.rBtn_WC_Enable.Name = "rBtn_WC_Enable";
+            this.rBtn_WC_Enable.Size = new System.Drawing.Size(213, 29);
+            this.rBtn_WC_Enable.TabIndex = 3;
+            this.rBtn_WC_Enable.TabStop = true;
+            this.rBtn_WC_Enable.Text = "步进式[刮片墨栈一体]";
+            this.rBtn_WC_Enable.UseVisualStyleBackColor = true;
+            this.rBtn_WC_Enable.CheckedChanged += new System.EventHandler(this.rBtn_W_CheckedChanged);
             // 
             // label_W_mode
             // 
             this.label_W_mode.AutoSize = true;
             this.label_W_mode.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_W_mode.Location = new System.Drawing.Point(25, 12);
+            this.label_W_mode.Location = new System.Drawing.Point(60, 12);
             this.label_W_mode.Margin = new System.Windows.Forms.Padding(0);
             this.label_W_mode.Name = "label_W_mode";
             this.label_W_mode.Size = new System.Drawing.Size(93, 25);
@@ -237,13 +255,13 @@
             // 
             this.rBtn_W_Enable.AutoSize = true;
             this.rBtn_W_Enable.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_W_Enable.Location = new System.Drawing.Point(143, 10);
+            this.rBtn_W_Enable.Location = new System.Drawing.Point(170, 10);
             this.rBtn_W_Enable.Margin = new System.Windows.Forms.Padding(0);
             this.rBtn_W_Enable.Name = "rBtn_W_Enable";
-            this.rBtn_W_Enable.Size = new System.Drawing.Size(163, 29);
+            this.rBtn_W_Enable.Size = new System.Drawing.Size(213, 29);
             this.rBtn_W_Enable.TabIndex = 2;
             this.rBtn_W_Enable.TabStop = true;
-            this.rBtn_W_Enable.Text = "步进电动式刮片";
+            this.rBtn_W_Enable.Text = "步进式[刮片墨栈分离]";
             this.rBtn_W_Enable.UseVisualStyleBackColor = true;
             this.rBtn_W_Enable.CheckedChanged += new System.EventHandler(this.rBtn_W_CheckedChanged);
             // 
@@ -251,13 +269,13 @@
             // 
             this.rBtn_W_Disable.AutoSize = true;
             this.rBtn_W_Disable.Font = new System.Drawing.Font("Microsoft YaHei", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_W_Disable.Location = new System.Drawing.Point(331, 10);
+            this.rBtn_W_Disable.Location = new System.Drawing.Point(170, 101);
             this.rBtn_W_Disable.Margin = new System.Windows.Forms.Padding(0);
             this.rBtn_W_Disable.Name = "rBtn_W_Disable";
-            this.rBtn_W_Disable.Size = new System.Drawing.Size(163, 29);
+            this.rBtn_W_Disable.Size = new System.Drawing.Size(213, 29);
             this.rBtn_W_Disable.TabIndex = 0;
             this.rBtn_W_Disable.TabStop = true;
-            this.rBtn_W_Disable.Text = "墨站一体式刮片";
+            this.rBtn_W_Disable.Text = "固定式[刮片墨栈一体]";
             this.rBtn_W_Disable.UseVisualStyleBackColor = true;
             this.rBtn_W_Disable.CheckedChanged += new System.EventHandler(this.rBtn_W_CheckedChanged);
             // 
@@ -266,7 +284,7 @@
             this.btn_FirstNext.BackgroundImage = global::CleanProApp.Properties.Resources.next;
             this.btn_FirstNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_FirstNext.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_FirstNext.Location = new System.Drawing.Point(335, 120);
+            this.btn_FirstNext.Location = new System.Drawing.Point(335, 290);
             this.btn_FirstNext.Margin = new System.Windows.Forms.Padding(0);
             this.btn_FirstNext.Name = "btn_FirstNext";
             this.btn_FirstNext.Size = new System.Drawing.Size(200, 32);
@@ -279,7 +297,7 @@
             this.btn_FirstBack.BackgroundImage = global::CleanProApp.Properties.Resources.back;
             this.btn_FirstBack.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_FirstBack.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_FirstBack.Location = new System.Drawing.Point(15, 120);
+            this.btn_FirstBack.Location = new System.Drawing.Point(15, 290);
             this.btn_FirstBack.Margin = new System.Windows.Forms.Padding(0);
             this.btn_FirstBack.Name = "btn_FirstBack";
             this.btn_FirstBack.Size = new System.Drawing.Size(200, 32);
@@ -289,16 +307,28 @@
             // 
             // statusStrip
             // 
+            this.statusStrip.ImeMode = System.Windows.Forms.ImeMode.Alpha;
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
             this.statusStrip.Location = new System.Drawing.Point(0, 699);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1327, 22);
+            this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 1;
-            this.statusStrip.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(1312, 17);
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // saveProFileDialog
             // 
             this.saveProFileDialog.CreatePrompt = true;
-            this.saveProFileDialog.Title = "保存流程文件为:";
+            this.saveProFileDialog.Title = "保存清洗流程文件为:";
             // 
             // btn_NewFile
             // 
@@ -338,7 +368,7 @@
             this.gBox_Second.Controls.Add(this.btn_SecondNext);
             this.gBox_Second.Controls.Add(this.btn_SecondBack);
             this.gBox_Second.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.gBox_Second.Location = new System.Drawing.Point(9, 174);
+            this.gBox_Second.Location = new System.Drawing.Point(559, 9);
             this.gBox_Second.Margin = new System.Windows.Forms.Padding(0);
             this.gBox_Second.Name = "gBox_Second";
             this.gBox_Second.Padding = new System.Windows.Forms.Padding(0);
@@ -531,11 +561,11 @@
             this.gBox_Third.Controls.Add(this.btn_ThirdNext);
             this.gBox_Third.Controls.Add(this.btn_ThirdBack);
             this.gBox_Third.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.gBox_Third.Location = new System.Drawing.Point(559, 9);
+            this.gBox_Third.Location = new System.Drawing.Point(559, 174);
             this.gBox_Third.Margin = new System.Windows.Forms.Padding(0);
             this.gBox_Third.Name = "gBox_Third";
             this.gBox_Third.Padding = new System.Windows.Forms.Padding(0);
-            this.gBox_Third.Size = new System.Drawing.Size(550, 579);
+            this.gBox_Third.Size = new System.Drawing.Size(550, 525);
             this.gBox_Third.TabIndex = 11;
             this.gBox_Third.TabStop = false;
             this.gBox_Third.Text = "确认清洗参数并调试:";
@@ -648,8 +678,11 @@
             // 
             // comBox_microPos
             // 
+            this.comBox_microPos.DropDownHeight = 70;
             this.comBox_microPos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comBox_microPos.FormattingEnabled = true;
+            this.comBox_microPos.IntegralHeight = false;
+            this.comBox_microPos.ItemHeight = 20;
             this.comBox_microPos.Items.AddRange(new object[] {
             "1",
             "2",
@@ -949,6 +982,8 @@
             // 
             // txtBox_Position
             // 
+            this.txtBox_Position.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_Position.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.txtBox_Position.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.txtBox_Position.Location = new System.Drawing.Point(299, 321);
             this.txtBox_Position.Margin = new System.Windows.Forms.Padding(0);
@@ -1073,7 +1108,7 @@
             this.btn_ThirdNext.BackgroundImage = global::CleanProApp.Properties.Resources.next;
             this.btn_ThirdNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_ThirdNext.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_ThirdNext.Location = new System.Drawing.Point(335, 540);
+            this.btn_ThirdNext.Location = new System.Drawing.Point(335, 484);
             this.btn_ThirdNext.Margin = new System.Windows.Forms.Padding(0);
             this.btn_ThirdNext.Name = "btn_ThirdNext";
             this.btn_ThirdNext.Size = new System.Drawing.Size(200, 32);
@@ -1086,7 +1121,7 @@
             this.btn_ThirdBack.BackgroundImage = global::CleanProApp.Properties.Resources.back;
             this.btn_ThirdBack.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_ThirdBack.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_ThirdBack.Location = new System.Drawing.Point(15, 540);
+            this.btn_ThirdBack.Location = new System.Drawing.Point(15, 484);
             this.btn_ThirdBack.Margin = new System.Windows.Forms.Padding(0);
             this.btn_ThirdBack.Name = "btn_ThirdBack";
             this.btn_ThirdBack.Size = new System.Drawing.Size(200, 32);
@@ -1141,8 +1176,13 @@
             // 
             // txtBox_SerialNum
             // 
+            this.txtBox_SerialNum.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_SerialNum.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.txtBox_SerialNum.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.txtBox_SerialNum.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.txtBox_SerialNum.Location = new System.Drawing.Point(74, 3);
             this.txtBox_SerialNum.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBox_SerialNum.MaxLength = 6;
             this.txtBox_SerialNum.Name = "txtBox_SerialNum";
             this.txtBox_SerialNum.Size = new System.Drawing.Size(85, 26);
             this.txtBox_SerialNum.TabIndex = 32;
@@ -1448,12 +1488,15 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormRoot";
             this.Text = "清洗流程编辑工具";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormRoot_FormClosing);
             this.Load += new System.EventHandler(this.FormRoot_Load);
             this.gBox_First.ResumeLayout(false);
             this.pnl_direct.ResumeLayout(false);
             this.pnl_direct.PerformLayout();
             this.pnl_mode.ResumeLayout(false);
             this.pnl_mode.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.gBox_Second.ResumeLayout(false);
             this.gBox_Second.PerformLayout();
             this.pnl_ptype.ResumeLayout(false);
@@ -1577,6 +1620,8 @@
         private System.Windows.Forms.Button btn_TestStetp;
         private System.Windows.Forms.Panel pnl_SerialNum;
         private System.Windows.Forms.ImageList imageInSteps;
+        private System.Windows.Forms.RadioButton rBtn_WC_Enable;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 

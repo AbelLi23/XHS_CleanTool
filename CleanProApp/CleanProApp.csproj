@@ -156,6 +156,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\K_ratio.ini" />
     <None Include="res\XHS_Logo.ico" />
   </ItemGroup>
   <ItemGroup>
