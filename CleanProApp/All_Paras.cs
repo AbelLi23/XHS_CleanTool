@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace CleanProApp
 {
     public class Xprinter
     {
+        #region Printer Interface
+        [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
+        private static extern bool RequestUpgrade(int nTarget, string szRequestRst, IntPtr nBuffLen);
+        #endregion
         //Public
         #region Public
         public Xprinter()
@@ -25,6 +30,9 @@ namespace CleanProApp
             for (int p = 0; p < P_XPos.Capacity; p++) P_XPos.Add(0);
             for (int w = 0; w < W_YPos.Capacity; w++) W_YPos.Add(0);
             for (int c = 0; c < C_Level.Capacity; c++) C_Level.Add(0);
+
+            string Rst = ""; IntPtr RstLen = IntPtr.Zero;
+            bool isOK = RequestUpgrade(0, Rst, RstLen);
         }
         public List<Icon> IconRes;
         public List<Image> ImageList;
@@ -172,6 +180,36 @@ namespace CleanProApp
             fs.Close();
 
             return actions;
+        }
+        public string F_CleanTxtCVRT_Dat(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) return string.Empty;
+
+            List<string> txtFile = new List<string>();
+            //DAT Head
+            string CleanPrefix = "P0001".PadRight(8, '\0');
+            string PrcName = Path.GetFileNameWithoutExtension(fileName).PadRight(64, '\0');
+            int PrcLen = 0;
+            txtFile = F_ReadProcess(fileName);
+            for (int n = 0; n < txtFile.Count; n++)
+            {
+                txtFile[n] += "\r\n";
+            }
+            foreach (string step in txtFile)
+            {
+                PrcLen += step.Length;
+            }
+            string PrcLength = PrcLen.ToString().PadRight(8, '\0');
+            string EndExt = "E1000".PadRight(80, '\0');
+            string DATHead = (CleanPrefix + PrcName + PrcLength + EndExt).PadRight(1600, '\0');
+            //DAT Body
+            var remain = PrcLen % 32; int more = 0;
+            if (remain != 0) { more = 32 - remain; }
+            string DATBody = PrcName;
+            foreach (string step in txtFile) DATBody += step;
+            for (int i = 0; i < more; i++) DATBody += '\0';
+
+            return DATHead + DATBody;
         }
         public bool F_AnalyzeProcess(List<string> actions)
         {

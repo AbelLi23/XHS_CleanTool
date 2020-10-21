@@ -28,7 +28,7 @@ namespace CleanProApp
             this.ClientSize = new Size(800, 600);
             //Create a new global instance
             Printer = new Xprinter();
-            Printer.IconRes = new List<Icon>(new Icon[] { AppRes.Painter1, AppRes.Wiper1, AppRes.Stage1, AppRes.PumpM1, AppRes.PumpS1, AppRes.Delay1 });
+            Printer.IconRes = new List<Icon>(new Icon[] { AppRes.Painter1, AppRes.Wiper1, AppRes.Stage1, AppRes.PumpM1, AppRes.PumpS1, AppRes.Delay1, AppRes.Update });
             Printer.ImageList = new List<Image>(new Image[] { AppRes.Painter, AppRes.Wiper, AppRes.Stage, AppRes.PumpM, AppRes.PumpS, AppRes.DelayImg });
         }
 
@@ -38,9 +38,12 @@ namespace CleanProApp
             page_ShowStep(UIPages.StartPage);
 
             //Start Page
-            btn_NewFile.Size = btn_Modify.Size = new Size(this.ClientSize.Width / 2, this.ClientSize.Height - statusStrip.Height);
+            btn_NewFile.Size = btn_Modify.Size = new Size(this.ClientSize.Width / 2, (this.ClientSize.Height - statusStrip.Height) / 2);
+            btn_NewDat.Size = btn_SetDat.Size = btn_NewFile.Size;
             btn_NewFile.Location = new Point(0, 0);
             btn_Modify.Location = new Point(btn_NewFile.Location.X + btn_NewFile.Width, btn_NewFile.Location.Y);
+            btn_NewDat.Location = new Point(btn_NewFile.Location.X, btn_NewFile.Location.Y + btn_NewFile.Height);
+            btn_SetDat.Location = new Point(btn_Modify.Location.X, btn_NewDat.Location.Y);
 
             //First groupBox
             gBox_First.Size = new Size(this.ClientSize.Width - 2 * gBox_First.Location.X, this.ClientSize.Height - 2 * gBox_First.Location.Y - statusStrip.Height);
@@ -83,6 +86,7 @@ namespace CleanProApp
             listView_CleanSteps.Location = new Point(pnl_Actions.Width + 2 * pnl_Actions.Location.X, pnl_Actions.Location.Y);
             pnl_EditStep.Location = new Point(listView_CleanSteps.Location.X + listView_CleanSteps.Width + pnl_Actions.Location.X, pnl_Actions.Location.Y);
             pnl_SerialNum.Location = new Point(btn_FirstNext.Location.X - pnl_SerialNum.Width, btn_FirstNext.Location.Y);
+            btn_Update.Location = new Point(pnl_EditStep.Location.X + btn_EditStetp.Location.X, listView_CleanSteps.Location.Y + listView_CleanSteps.Height - btn_Update.Height);
             btn_FourthBack.Location = btn_FirstBack.Location;
             btn_SaveProFile.Location = btn_FirstNext.Location;
         }
@@ -94,6 +98,7 @@ namespace CleanProApp
             {
                 case UIPages.StartPage:
                     btn_NewFile.Visible = btn_Modify.Visible = true;
+                    btn_NewDat.Visible = btn_SetDat.Visible = true;
                     gBox_First.Visible = false;
                     gBox_Second.Visible = false;
                     gBox_Third.Visible = false;
@@ -101,6 +106,7 @@ namespace CleanProApp
                     break;
                 case UIPages.FirstStep:
                     btn_NewFile.Visible = btn_Modify.Visible = false;
+                    btn_NewDat.Visible = btn_SetDat.Visible = false;
                     gBox_First.Visible = true;
                     gBox_Second.Visible = false;
                     gBox_Third.Visible = false;
@@ -108,6 +114,7 @@ namespace CleanProApp
                     break;
                 case UIPages.SecondStep:
                     btn_NewFile.Visible = btn_Modify.Visible = false;
+                    btn_NewDat.Visible = btn_SetDat.Visible = false;
                     gBox_First.Visible = false;
                     gBox_Second.Visible = true;
                     gBox_Third.Visible = false;
@@ -115,6 +122,7 @@ namespace CleanProApp
                     break;
                 case UIPages.ThirdStep:
                     btn_NewFile.Visible = btn_Modify.Visible = false;
+                    btn_NewDat.Visible = btn_SetDat.Visible = false;
                     gBox_First.Visible = false;
                     gBox_Second.Visible = false;
                     gBox_Third.Visible = true;
@@ -122,6 +130,7 @@ namespace CleanProApp
                     break;
                 case UIPages.FourthStep:
                     btn_NewFile.Visible = btn_Modify.Visible = false;
+                    btn_NewDat.Visible = btn_SetDat.Visible = false;
                     gBox_First.Visible = false;
                     gBox_Second.Visible = false;
                     gBox_Third.Visible = false;
@@ -152,6 +161,11 @@ namespace CleanProApp
             //Initialize UI parameters
             RenderUI(UIPages.FirstStep);
             page_ShowStep(UIPages.FirstStep);
+        }
+        private void Pak_Or_Update(object sender, EventArgs e)
+        {
+            ZR_Update update = (btn_NewDat == (Button)sender) ? (new ZR_Update(true)) : (new ZR_Update(false));
+            update.ShowDialog();
         }
         #endregion
 
@@ -976,11 +990,17 @@ namespace CleanProApp
             saveProFileDialog.FileName = "";
             if (saveProFileDialog.ShowDialog() == DialogResult.OK)
             {
+                btn_Update.Visible = true;
                 string ProFile = saveProFileDialog.FileName;
                 InsertPreKSet();//追加流程头
                 Printer.CleanProcess.Add(@"@En0;");//追加流程尾
                 Printer.F_SaveProcess(Printer.CleanProcess, ProFile);
             }
+        }
+        private void btn_Update_Click(object sender, EventArgs e)
+        {
+            ZR_Update update = new ZR_Update(false);
+            update.ShowDialog();
         }
         #endregion
 

@@ -199,8 +199,22 @@
   <data name="_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\res\new.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <!---->
   <data name="K_ratio" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\K_ratio.ini;System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;gb2312</value>
+  </data>
+  <data name="datPak" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\datPak.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="datSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\datSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\Update.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Update1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\Update.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pakdat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\Pakdat.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

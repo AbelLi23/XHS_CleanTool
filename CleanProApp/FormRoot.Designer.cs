@@ -103,6 +103,7 @@
             this.btn_ThirdBack = new System.Windows.Forms.Button();
             this.openProFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.gBox_Fourth = new System.Windows.Forms.GroupBox();
+            this.btn_Update = new System.Windows.Forms.Button();
             this.pnl_SerialNum = new System.Windows.Forms.Panel();
             this.label_SerialNum = new System.Windows.Forms.Label();
             this.txtBox_SerialNum = new System.Windows.Forms.TextBox();
@@ -125,6 +126,8 @@
             this.btn_SaveProFile = new System.Windows.Forms.Button();
             this.btn_FourthBack = new System.Windows.Forms.Button();
             this.imageInSteps = new System.Windows.Forms.ImageList(this.components);
+            this.btn_SetDat = new System.Windows.Forms.Button();
+            this.btn_NewDat = new System.Windows.Forms.Button();
             this.gBox_First.SuspendLayout();
             this.pnl_direct.SuspendLayout();
             this.pnl_mode.SuspendLayout();
@@ -340,7 +343,7 @@
             this.btn_NewFile.Name = "btn_NewFile";
             this.btn_NewFile.Size = new System.Drawing.Size(75, 23);
             this.btn_NewFile.TabIndex = 2;
-            this.btn_NewFile.Text = "新建清洗流程";
+            this.btn_NewFile.Text = "新建喷头清洗流程";
             this.btn_NewFile.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btn_NewFile.UseVisualStyleBackColor = true;
             this.btn_NewFile.Click += new System.EventHandler(this.btn_StartPageClick);
@@ -355,7 +358,7 @@
             this.btn_Modify.Name = "btn_Modify";
             this.btn_Modify.Size = new System.Drawing.Size(75, 23);
             this.btn_Modify.TabIndex = 3;
-            this.btn_Modify.Text = "修改清洗流程";
+            this.btn_Modify.Text = "修改喷头清洗流程";
             this.btn_Modify.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btn_Modify.UseVisualStyleBackColor = true;
             this.btn_Modify.Click += new System.EventHandler(this.btn_StartPageClick);
@@ -1136,6 +1139,7 @@
             // 
             // gBox_Fourth
             // 
+            this.gBox_Fourth.Controls.Add(this.btn_Update);
             this.gBox_Fourth.Controls.Add(this.pnl_SerialNum);
             this.gBox_Fourth.Controls.Add(this.pnl_EditStep);
             this.gBox_Fourth.Controls.Add(this.pnl_Actions);
@@ -1151,6 +1155,23 @@
             this.gBox_Fourth.TabIndex = 12;
             this.gBox_Fourth.TabStop = false;
             this.gBox_Fourth.Text = "确认清洗流程:";
+            // 
+            // btn_Update
+            // 
+            this.btn_Update.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_Update.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btn_Update.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_Update.Image = global::CleanProApp.Properties.Resources.Update1;
+            this.btn_Update.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btn_Update.Location = new System.Drawing.Point(456, 190);
+            this.btn_Update.Margin = new System.Windows.Forms.Padding(0);
+            this.btn_Update.Name = "btn_Update";
+            this.btn_Update.Size = new System.Drawing.Size(60, 45);
+            this.btn_Update.TabIndex = 41;
+            this.btn_Update.Text = "升级";
+            this.btn_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btn_Update.UseVisualStyleBackColor = true;
+            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
             // 
             // pnl_SerialNum
             // 
@@ -1198,7 +1219,7 @@
             this.pnl_EditStep.Location = new System.Drawing.Point(143, 20);
             this.pnl_EditStep.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_EditStep.Name = "pnl_EditStep";
-            this.pnl_EditStep.Size = new System.Drawing.Size(72, 254);
+            this.pnl_EditStep.Size = new System.Drawing.Size(72, 299);
             this.pnl_EditStep.TabIndex = 42;
             // 
             // label1
@@ -1471,11 +1492,43 @@
             this.imageInSteps.Images.SetKeyName(5, "PumpS.png");
             this.imageInSteps.Images.SetKeyName(6, "Delay.png");
             // 
+            // btn_SetDat
+            // 
+            this.btn_SetDat.BackgroundImage = global::CleanProApp.Properties.Resources.datSet;
+            this.btn_SetDat.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_SetDat.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_SetDat.Location = new System.Drawing.Point(1251, 46);
+            this.btn_SetDat.Margin = new System.Windows.Forms.Padding(0);
+            this.btn_SetDat.Name = "btn_SetDat";
+            this.btn_SetDat.Size = new System.Drawing.Size(75, 23);
+            this.btn_SetDat.TabIndex = 14;
+            this.btn_SetDat.Text = "载入数据包至打印机";
+            this.btn_SetDat.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btn_SetDat.UseVisualStyleBackColor = true;
+            this.btn_SetDat.Click += new System.EventHandler(this.Pak_Or_Update);
+            // 
+            // btn_NewDat
+            // 
+            this.btn_NewDat.BackgroundImage = global::CleanProApp.Properties.Resources.datPak;
+            this.btn_NewDat.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btn_NewDat.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_NewDat.Location = new System.Drawing.Point(1176, 46);
+            this.btn_NewDat.Margin = new System.Windows.Forms.Padding(0);
+            this.btn_NewDat.Name = "btn_NewDat";
+            this.btn_NewDat.Size = new System.Drawing.Size(75, 23);
+            this.btn_NewDat.TabIndex = 13;
+            this.btn_NewDat.Text = "生成清洗流程数据包";
+            this.btn_NewDat.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btn_NewDat.UseVisualStyleBackColor = true;
+            this.btn_NewDat.Click += new System.EventHandler(this.Pak_Or_Update);
+            // 
             // FormRoot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1327, 721);
+            this.Controls.Add(this.btn_SetDat);
+            this.Controls.Add(this.btn_NewDat);
             this.Controls.Add(this.gBox_Fourth);
             this.Controls.Add(this.gBox_Third);
             this.Controls.Add(this.gBox_Second);
@@ -1622,6 +1675,9 @@
         private System.Windows.Forms.ImageList imageInSteps;
         private System.Windows.Forms.RadioButton rBtn_WC_Enable;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button btn_SetDat;
+        private System.Windows.Forms.Button btn_NewDat;
+        private System.Windows.Forms.Button btn_Update;
     }
 }
 

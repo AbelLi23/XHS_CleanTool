@@ -27,9 +27,10 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>b03f136d</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -48,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>res\XHS_Logo.ico</ApplicationIcon>
+    <ApplicationIcon>XHS.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>CleanProApp.Program</StartupObject>
@@ -105,6 +106,12 @@
     <Compile Include="Y_Wiper.Designer.cs">
       <DependentUpon>Y_Wiper.cs</DependentUpon>
     </Compile>
+    <Compile Include="ZR_Update.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ZR_Update.Designer.cs">
+      <DependentUpon>ZR_Update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Z_Stage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +145,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Y_Wiper.resx">
       <DependentUpon>Y_Wiper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZR_Update.resx">
+      <DependentUpon>ZR_Update.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Z_Stage.resx">
       <DependentUpon>Z_Stage.cs</DependentUpon>
@@ -251,6 +261,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\K_ratio.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Update.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\datPak.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\datSet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Pakdat.png" />
+    <Content Include="XHS.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
