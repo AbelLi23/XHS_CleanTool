@@ -39,7 +39,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Pump_M";
-            this.Text = "Pump_M";
+            this.Text = "墨泵编辑";
             this.ResumeLayout(false);
 
         }

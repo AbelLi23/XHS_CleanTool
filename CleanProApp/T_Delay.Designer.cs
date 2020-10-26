@@ -39,7 +39,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "T_Delay";
-            this.Text = "T_Delay";
+            this.Text = "延时编辑";
             this.ResumeLayout(false);
 
         }

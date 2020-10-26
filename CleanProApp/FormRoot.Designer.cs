@@ -1171,6 +1171,7 @@
             this.btn_Update.Text = "升级";
             this.btn_Update.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_Update.UseVisualStyleBackColor = true;
+            this.btn_Update.Visible = false;
             this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
             // 
             // pnl_SerialNum
@@ -1249,6 +1250,7 @@
             this.btn_UpStetp.Text = "上移";
             this.btn_UpStetp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_UpStetp.UseVisualStyleBackColor = true;
+            this.btn_UpStetp.Click += new System.EventHandler(this.EditCleanSteps);
             // 
             // btn_DownStetp
             // 
@@ -1265,6 +1267,7 @@
             this.btn_DownStetp.Text = "下移";
             this.btn_DownStetp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_DownStetp.UseVisualStyleBackColor = true;
+            this.btn_DownStetp.Click += new System.EventHandler(this.EditCleanSteps);
             // 
             // btn_DelStetp
             // 
@@ -1281,6 +1284,7 @@
             this.btn_DelStetp.Text = "删除";
             this.btn_DelStetp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_DelStetp.UseVisualStyleBackColor = true;
+            this.btn_DelStetp.Click += new System.EventHandler(this.EditCleanSteps);
             // 
             // btn_EditStetp
             // 
@@ -1297,6 +1301,7 @@
             this.btn_EditStetp.Text = "修改";
             this.btn_EditStetp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_EditStetp.UseVisualStyleBackColor = true;
+            this.btn_EditStetp.Click += new System.EventHandler(this.EditCleanSteps);
             // 
             // btn_TestStetp
             // 
@@ -1445,23 +1450,26 @@
             this.listView_CleanSteps.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.listView_CleanSteps.Location = new System.Drawing.Point(87, 20);
             this.listView_CleanSteps.Margin = new System.Windows.Forms.Padding(0);
+            this.listView_CleanSteps.MultiSelect = false;
             this.listView_CleanSteps.Name = "listView_CleanSteps";
             this.listView_CleanSteps.Size = new System.Drawing.Size(52, 52);
             this.listView_CleanSteps.TabIndex = 8;
             this.listView_CleanSteps.UseCompatibleStateImageBehavior = false;
             this.listView_CleanSteps.View = System.Windows.Forms.View.Details;
+            this.listView_CleanSteps.DoubleClick += new System.EventHandler(this.listView_CleanSteps_DoubleClick);
             // 
             // btn_SaveProFile
             // 
             this.btn_SaveProFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btn_SaveProFile.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_SaveProFile.Image = global::CleanProApp.Properties.Resources.savePro;
+            this.btn_SaveProFile.Image = global::CleanProApp.Properties.Resources.Update1;
+            this.btn_SaveProFile.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btn_SaveProFile.Location = new System.Drawing.Point(335, 311);
             this.btn_SaveProFile.Margin = new System.Windows.Forms.Padding(0);
             this.btn_SaveProFile.Name = "btn_SaveProFile";
             this.btn_SaveProFile.Size = new System.Drawing.Size(200, 32);
             this.btn_SaveProFile.TabIndex = 7;
-            this.btn_SaveProFile.Text = "保存清洗流程";
+            this.btn_SaveProFile.Text = "保存清洗流程并上传";
             this.btn_SaveProFile.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btn_SaveProFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_SaveProFile.UseVisualStyleBackColor = true;
@@ -1502,7 +1510,7 @@
             this.btn_SetDat.Name = "btn_SetDat";
             this.btn_SetDat.Size = new System.Drawing.Size(75, 23);
             this.btn_SetDat.TabIndex = 14;
-            this.btn_SetDat.Text = "载入数据包至打印机";
+            this.btn_SetDat.Text = "上传数据包至打印机";
             this.btn_SetDat.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btn_SetDat.UseVisualStyleBackColor = true;
             this.btn_SetDat.Click += new System.EventHandler(this.Pak_Or_Update);

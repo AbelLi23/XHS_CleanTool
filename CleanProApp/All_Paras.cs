@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace CleanProApp
 {
+    using AppCfg = CleanProApp.Properties.Settings;
     public class Xprinter
     {
         #region Printer Interface
@@ -125,9 +126,9 @@ namespace CleanProApp
         //PumpM
         #region PumpM
         public bool M_OnlyTime = false;
-        public int M_OnlyWorkTime;
+        public int M_OnlyWorkTime = AppCfg.Default.M_Ttt_Min;
         public int M_Strength = 1;
-        public int M_WorkTime;//(0-1000, 999, 1000)
+        public int M_WorkTime = AppCfg.Default.M_WrT_Min;//(0-1000, 999, 1000)
         public int M_HoldTime;
         public int M_CycleNum = 1;
         #endregion
@@ -210,6 +211,10 @@ namespace CleanProApp
             for (int i = 0; i < more; i++) DATBody += '\0';
 
             return DATHead + DATBody;
+        }
+        public bool F_SendDatToPrt(string fileName)
+        {
+            return false;
         }
         public bool F_AnalyzeProcess(List<string> actions)
         {

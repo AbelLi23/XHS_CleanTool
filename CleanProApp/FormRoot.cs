@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace CleanProApp
 {
+    using AppCfg = CleanProApp.Properties.Settings;
     using AppRes = CleanProApp.Properties.Resources;
     public partial class FormRoot : Form
     {
@@ -14,7 +15,6 @@ namespace CleanProApp
         public static int P_ArrRow = 4, P_ArrCol = 4;
         public enum UIPages { StartPage, FirstStep, SecondStep, ThirdStep, FourthStep }
         public enum CleanMode { W1_C_PP, W1_C_P, W1C_PP, W1C_P, W0C_PP }//W1表示刮片能动, PP表示用小车来刮
-
         public FormRoot()
         {
             this.Icon = AppRes.XHS;
@@ -260,6 +260,16 @@ namespace CleanProApp
                     break;
                 case "btn_SaveProFile":
                     SaveProcessFile();
+                    string DatStream = string.Empty;
+                    if (!string.IsNullOrEmpty(saveProFileDialog.FileName))
+                    {
+                        DatStream = Printer.F_CleanTxtCVRT_Dat(saveProFileDialog.FileName);
+                        bool TrasGood = Printer.F_SendDatToPrt(DatStream);
+                        string TipMsg = TrasGood ? string.Format("流程文件已经保存并成功上传至打印机.") : string.Format("流程文件已经保存，上传至打印机失败!");
+                        MessageBoxIcon TipIco = TrasGood ? MessageBoxIcon.Asterisk : MessageBoxIcon.Exclamation;
+                        MessageBox.Show(TipMsg, "提示:", MessageBoxButtons.OK, TipIco);
+                    }
+                    else return;
                     break;
             }
         }
@@ -397,24 +407,25 @@ namespace CleanProApp
                     this.chkBox_HoldTime_CheckedChanged(null, null);
                 else
                 {
-                    trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 0; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
-                    trkBar_HoldTime.Value = Printer.M_WorkTime;
-                    label_HoldTimeV.Text = (0.1 * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                    trkBar_HoldTime.Maximum = AppCfg.Default.M_WrT_Max; trkBar_HoldTime.Minimum = AppCfg.Default.M_WrT_Min;
+                    trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+                    trkBar_HoldTime.Value = AppCfg.Default.M_WrT_K29;//Printer.M_WorkTime;
+                    label_HoldTimeV.Text = (AppCfg.Default.M_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
                 }
-                trkBar_Intensity.Maximum = 7; trkBar_Intensity.Minimum = 1; trkBar_Intensity.SmallChange = trkBar_Intensity.TickFrequency = 1;
-                //trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 0; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
-                trkBar_WaitTime.Maximum = 1000; trkBar_WaitTime.Minimum = 0; trkBar_WaitTime.SmallChange = trkBar_WaitTime.TickFrequency = 1;
-                trkBar_CycleNum.Maximum = 100; trkBar_CycleNum.Minimum = 1; trkBar_CycleNum.SmallChange = trkBar_Intensity.TickFrequency = 1;
+                trkBar_Intensity.Maximum = AppCfg.Default.M_Pow_Max; trkBar_Intensity.Minimum = AppCfg.Default.M_Pow_Min;
+                trkBar_Intensity.SmallChange = trkBar_Intensity.TickFrequency = 1;
+                trkBar_WaitTime.Maximum = AppCfg.Default.M_SpT_Max; trkBar_WaitTime.Minimum = AppCfg.Default.M_SpT_Min;
+                trkBar_WaitTime.SmallChange = trkBar_WaitTime.TickFrequency = 1;
+                trkBar_CycleNum.Maximum = AppCfg.Default.M_Cyc_Max; trkBar_CycleNum.Minimum = AppCfg.Default.M_Cyc_Min;
+                trkBar_CycleNum.SmallChange = trkBar_Intensity.TickFrequency = 1;
 
-                trkBar_Intensity.Value = Printer.M_Strength;
-                //trkBar_HoldTime.Value = Printer.M_WorkTime;
-                trkBar_WaitTime.Value = Printer.M_HoldTime;
-                trkBar_CycleNum.Value = Printer.M_CycleNum;
+                trkBar_Intensity.Value = AppCfg.Default.M_Pow_K56;//Printer.M_Strength;
+                trkBar_WaitTime.Value = AppCfg.Default.M_SpT_K30;//Printer.M_HoldTime;
+                trkBar_CycleNum.Value = AppCfg.Default.M_Cyc_K10;//Printer.M_CycleNum;
 
-                label_IntensityV.Text = trkBar_Intensity.Value.ToString() + "级";
-                //label_HoldTimeV.Text = (0.1 * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
-                label_WaitTimeV.Text = (0.1 * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = trkBar_CycleNum.Value.ToString() + "次";
+                label_IntensityV.Text = (AppCfg.Default.M_Pow_Rto * trkBar_Intensity.Value).ToString() + "级";
+                label_WaitTimeV.Text = (AppCfg.Default.M_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
+                label_CycleNumV.Text = (AppCfg.Default.M_Cyc_Rto * trkBar_CycleNum.Value).ToString() + "次";
             }
             else if (rBtn_V_Set == radioBtn)
             {
@@ -427,20 +438,24 @@ namespace CleanProApp
                 trkBar_WaitTime.Enabled = true;
                 trkBar_CycleNum.Enabled = true;
 
-                trkBar_Intensity.Maximum = 9; trkBar_Intensity.Minimum = 1; trkBar_Intensity.SmallChange = trkBar_Intensity.TickFrequency = 1;
-                trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 0; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
-                trkBar_WaitTime.Maximum = 1000; trkBar_WaitTime.Minimum = 0; trkBar_WaitTime.SmallChange = trkBar_WaitTime.TickFrequency = 1;
-                trkBar_CycleNum.Maximum = 100; trkBar_CycleNum.Minimum = 1; trkBar_CycleNum.SmallChange = trkBar_Intensity.TickFrequency = 1;
+                trkBar_Intensity.Maximum = AppCfg.Default.V_Pow_Max; trkBar_Intensity.Minimum = AppCfg.Default.V_Pow_Min;
+                trkBar_Intensity.SmallChange = trkBar_Intensity.TickFrequency = 1;
+                trkBar_HoldTime.Maximum = AppCfg.Default.V_WrT_Max; trkBar_HoldTime.Minimum = AppCfg.Default.V_WrT_Min;
+                trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+                trkBar_WaitTime.Maximum = AppCfg.Default.V_SpT_Max; trkBar_WaitTime.Minimum = AppCfg.Default.V_SpT_Min;
+                trkBar_WaitTime.SmallChange = trkBar_WaitTime.TickFrequency = 1;
+                trkBar_CycleNum.Maximum = AppCfg.Default.V_Cyc_Max; trkBar_CycleNum.Minimum = AppCfg.Default.V_Cyc_Min;
+                trkBar_CycleNum.SmallChange = trkBar_Intensity.TickFrequency = 1;
 
-                trkBar_Intensity.Value = Printer.V_Strength;
-                trkBar_HoldTime.Value = Printer.V_WorkTime;
-                trkBar_WaitTime.Value = Printer.V_HoldTime;
+                trkBar_Intensity.Value = AppCfg.Default.V_Pow_Kvv;//Printer.V_Strength;
+                trkBar_HoldTime.Value = AppCfg.Default.V_WrT_Kvv;//Printer.V_WorkTime;
+                trkBar_WaitTime.Value = AppCfg.Default.V_SpT_Kvv;//Printer.V_HoldTime;
                 trkBar_CycleNum.Value = Printer.V_CycleNum;
 
-                label_IntensityV.Text = trkBar_Intensity.Value.ToString() + "级";
-                label_HoldTimeV.Text = (0.1 * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
-                label_WaitTimeV.Text = (0.1 * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = trkBar_CycleNum.Value.ToString() + "次";
+                label_IntensityV.Text = (AppCfg.Default.V_Pow_Rto * trkBar_Intensity.Value).ToString() + "级";
+                label_HoldTimeV.Text = (AppCfg.Default.V_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                label_WaitTimeV.Text = (AppCfg.Default.V_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
+                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Rto * trkBar_CycleNum.Value).ToString() + "次";
             }
             else if (rBtn_N_Set == radioBtn)
             {
@@ -450,14 +465,15 @@ namespace CleanProApp
                 label_CycleNum.Visible = (radioBtn.Checked) ? false : true;
 
                 trkBar_Intensity.Visible = (radioBtn.Checked) ? false : true;
-                trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 1; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+                trkBar_HoldTime.Maximum = AppCfg.Default.N_Dly_Max; trkBar_HoldTime.Minimum = AppCfg.Default.N_Dly_Min;
+                trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
                 trkBar_WaitTime.Visible = (radioBtn.Checked) ? false : true;
                 trkBar_CycleNum.Visible = (radioBtn.Checked) ? false : true;
 
-                trkBar_HoldTime.Value = Printer.N_WaitTime;
+                trkBar_HoldTime.Value = AppCfg.Default.N_Dly_K06;//Printer.N_WaitTime;
 
                 label_IntensityV.Visible = (radioBtn.Checked) ? false : true;
-                label_HoldTimeV.Text = trkBar_HoldTime.Value.ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString() + "秒";
                 label_WaitTimeV.Visible = (radioBtn.Checked) ? false : true;
                 label_CycleNumV.Visible = (radioBtn.Checked) ? false : true;
             }
@@ -468,16 +484,18 @@ namespace CleanProApp
             if (chkBox_HoldTime.Checked)
             {
                 Printer.M_OnlyTime = true;
-                trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 0; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
-                trkBar_HoldTime.Value = Printer.M_OnlyWorkTime;
-                label_HoldTimeV.Text = trkBar_HoldTime.Value.ToString() + "秒";
+                trkBar_HoldTime.Maximum = AppCfg.Default.M_Ttt_Max; trkBar_HoldTime.Minimum = AppCfg.Default.M_Ttt_Min;
+                trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+                trkBar_HoldTime.Value = AppCfg.Default.M_Ttt_K22;//Printer.M_OnlyWorkTime;
+                label_HoldTimeV.Text = (AppCfg.Default.M_Ttt_Rto * trkBar_HoldTime.Value).ToString() + "秒";
             }
             else
             {
                 Printer.M_OnlyTime = false;
-                trkBar_HoldTime.Maximum = 1000; trkBar_HoldTime.Minimum = 0; trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
-                trkBar_HoldTime.Value = Printer.M_WorkTime;
-                label_HoldTimeV.Text = (0.1 * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                trkBar_HoldTime.Maximum = AppCfg.Default.M_WrT_Max; trkBar_HoldTime.Minimum = AppCfg.Default.M_WrT_Min;
+                trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+                trkBar_HoldTime.Value = AppCfg.Default.M_WrT_K29;//Printer.M_WorkTime;
+                label_HoldTimeV.Text = (AppCfg.Default.M_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
             }
             trkBar_WaitTime.Enabled = (chkBox_HoldTime.Checked) ? false : true;
             trkBar_CycleNum.Enabled = (chkBox_HoldTime.Checked) ? false : true;
@@ -486,18 +504,18 @@ namespace CleanProApp
         {
             if (rBtn_N_Set.Checked)
             {
-                label_HoldTimeV.Text = trkBar_HoldTime.Value.ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString() + "秒";
             }
             else if (rBtn_M_Set.Checked && chkBox_HoldTime.Checked)
             {
-                label_HoldTimeV.Text = trkBar_HoldTime.Value.ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.M_WrT_Rto * trkBar_HoldTime.Value).ToString() + "秒";
             }
             else
             {
-                label_IntensityV.Text = trkBar_Intensity.Value.ToString() + "级";
-                label_HoldTimeV.Text = (0.1 * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
-                label_WaitTimeV.Text = (0.1 * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = trkBar_CycleNum.Value.ToString() + "次";
+                label_IntensityV.Text = (AppCfg.Default.V_Pow_Kvv * trkBar_Intensity.Value).ToString() + "级";
+                label_HoldTimeV.Text = (AppCfg.Default.V_WrT_Kvv * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                label_WaitTimeV.Text = (AppCfg.Default.V_SpT_Kvv * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
+                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Kvv * trkBar_CycleNum.Value).ToString() + "次";
             }
         }
         private void btn_SetPumpPara_Click(object sender, EventArgs e)
@@ -507,26 +525,36 @@ namespace CleanProApp
             {
                 if (chkBox_HoldTime.Checked)
                 {
-                    Printer.M_OnlyWorkTime = trkBar_HoldTime.Value;
+                    //Printer.M_OnlyWorkTime = trkBar_HoldTime.Value;
+                    AppCfg.Default.M_Ttt_K22 = trkBar_HoldTime.Value;
                 }
                 else
                 {
-                    Printer.M_Strength = trkBar_Intensity.Value;
-                    Printer.M_WorkTime = trkBar_HoldTime.Value;
-                    Printer.M_HoldTime = trkBar_WaitTime.Value;
-                    Printer.M_CycleNum = trkBar_CycleNum.Value;
+                    //Printer.M_Strength = trkBar_Intensity.Value;
+                    AppCfg.Default.M_Pow_K56 = trkBar_Intensity.Value;
+                    //Printer.M_WorkTime = trkBar_HoldTime.Value;
+                    AppCfg.Default.M_WrT_K29 = trkBar_HoldTime.Value;
+                    //Printer.M_HoldTime = trkBar_WaitTime.Value;
+                    AppCfg.Default.M_SpT_K30 = trkBar_WaitTime.Value;
+                    //Printer.M_CycleNum = trkBar_CycleNum.Value;
+                    AppCfg.Default.M_Cyc_K10 = trkBar_CycleNum.Value;
                 }
             }
             else if (rBtn_V_Set.Checked)
             {
-                Printer.V_Strength = trkBar_Intensity.Value;
-                Printer.V_WorkTime = trkBar_HoldTime.Value;
-                Printer.V_HoldTime = trkBar_WaitTime.Value;
-                Printer.V_CycleNum = trkBar_CycleNum.Value;
+                //Printer.V_Strength = trkBar_Intensity.Value;
+                AppCfg.Default.V_Pow_Kvv = trkBar_Intensity.Value;
+                //Printer.V_WorkTime = trkBar_HoldTime.Value;
+                AppCfg.Default.V_WrT_Kvv = trkBar_HoldTime.Value;
+                //Printer.V_HoldTime = trkBar_WaitTime.Value;
+                AppCfg.Default.V_SpT_Kvv = trkBar_WaitTime.Value;
+                //Printer.V_CycleNum = trkBar_CycleNum.Value;
+                AppCfg.Default.V_Cyc_Kvv = trkBar_CycleNum.Value;
             }
             else if (rBtn_N_Set.Checked)
             {
-                Printer.N_WaitTime = trkBar_HoldTime.Value;
+                //Printer.N_WaitTime = trkBar_HoldTime.Value;
+                AppCfg.Default.N_Dly_K06 = trkBar_HoldTime.Value;
             }
         }
         private void rBtn_Para2_CheckedChanged(object sender, EventArgs e)
@@ -538,9 +566,10 @@ namespace CleanProApp
                 label_Velocity.Text = (radioBtn.Checked) ? (btn_Stage.Text + Vel) : Vel;
                 label_Position.Text = (radioBtn.Checked) ? (btn_Stage.Text + Pos) : Pos;
 
-                trkBar_Velocity.Maximum = 100; trkBar_Velocity.Minimum = 0; trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
-                trkBar_Velocity.Value = Printer.C_Speed;
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                trkBar_Velocity.Maximum = AppCfg.Default.C_Vel_Max; trkBar_Velocity.Minimum = AppCfg.Default.C_Vel_Min;
+                trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
+                trkBar_Velocity.Value = AppCfg.Default.C_Vel_K08;//Printer.C_Speed;
+                label_VelocityV.Text = (AppCfg.Default.C_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
 
                 List<string> items = new List<string>(Printer.C_LevelMark);
                 //Printer.C_Level = new List<int>(items.Count);
@@ -551,9 +580,10 @@ namespace CleanProApp
                 label_Velocity.Text = (radioBtn.Checked) ? (btn_Painter.Text + Vel) : Vel;
                 label_Position.Text = (radioBtn.Checked) ? (btn_Painter.Text + Pos) : Pos;
 
-                trkBar_Velocity.Maximum = 100; trkBar_Velocity.Minimum = 0; trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
-                trkBar_Velocity.Value = Printer.P_Speed;
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                trkBar_Velocity.Maximum = AppCfg.Default.P_Vel_Max; trkBar_Velocity.Minimum = AppCfg.Default.P_Vel_Min;
+                trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
+                trkBar_Velocity.Value = AppCfg.Default.P_Vel_Kpp;//Printer.P_Speed;
+                label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
 
                 List<string> items = new List<string>();
                 //Printer.P_XPos = new List<int>(items.Count);
@@ -579,9 +609,10 @@ namespace CleanProApp
                 label_Velocity.Text = (radioBtn.Checked) ? (btn_Wiper.Text + Vel) : Vel;
                 label_Position.Text = (radioBtn.Checked) ? (btn_Wiper.Text + Pos) : Pos;
 
-                trkBar_Velocity.Maximum = 100; trkBar_Velocity.Minimum = 0; trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
-                trkBar_Velocity.Value = Printer.W_Speed;
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                trkBar_Velocity.Maximum = AppCfg.Default.W_Vel_Max; trkBar_Velocity.Minimum = AppCfg.Default.W_Vel_Min;
+                trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
+                trkBar_Velocity.Value = AppCfg.Default.W_Vel_K55;//Printer.W_Speed;
+                label_VelocityV.Text = (AppCfg.Default.W_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
 
                 List<string> items = new List<string>();
                 //Printer.W_YPos = new List<int>(items.Count); 刮片只考虑一个位置
@@ -600,15 +631,15 @@ namespace CleanProApp
         {
             if (rBtn_C_Set.Checked)
             {
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                label_VelocityV.Text = (AppCfg.Default.C_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
             }
             else if (rBtn_P_Set.Checked)
             {
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
             }
             else if (rBtn_W_Set.Checked)
             {
-                label_VelocityV.Text = (0.1 * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                label_VelocityV.Text = (AppCfg.Default.W_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
             }
         }
         private void comBox_Position_SelectedIndexChanged(object sender, EventArgs e)
@@ -620,7 +651,6 @@ namespace CleanProApp
                     if (Printer.C_Level.Count != 0)
                         txtBox_Position.Text = Printer.C_Level[comBox_Position.SelectedIndex].ToString();
                 }
-
             }
             else if (rBtn_P_Set.Checked)
             {
@@ -644,21 +674,24 @@ namespace CleanProApp
             //更新数据的主体
             if (rBtn_C_Set.Checked)
             {
-                Printer.C_Speed = trkBar_Velocity.Value;
+                //Printer.C_Speed = trkBar_Velocity.Value;
+                AppCfg.Default.C_Vel_K08 = trkBar_Velocity.Value;
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.C_Level[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
             }
             else if (rBtn_P_Set.Checked)
             {
-                Printer.P_Speed = trkBar_Velocity.Value;
+                //Printer.P_Speed = trkBar_Velocity.Value;
+                AppCfg.Default.P_Vel_Kpp = trkBar_Velocity.Value;
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.P_XPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
             }
             else if (rBtn_W_Set.Checked)
             {
-                Printer.W_Speed = trkBar_Velocity.Value;
+                //Printer.W_Speed = trkBar_Velocity.Value;
+                AppCfg.Default.W_Vel_K55 = trkBar_Velocity.Value;
                 bool rst = false; int tmpVal = 0;
                 if (comBox_Position.SelectedItem != null) { rst = int.TryParse(txtBox_Position.Text, out tmpVal); }
                 if (comBox_Position.SelectedIndex != -1) Printer.W_YPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
@@ -849,7 +882,6 @@ namespace CleanProApp
             ProcessTemplate.Add(AddSingleStep("M0"));
             return ProcessTemplate;
         }
-
         private void CreateActionList()
         {
             listView_CleanSteps.Columns.Clear();//清除列头
@@ -914,6 +946,89 @@ namespace CleanProApp
                 listView_CleanSteps.Items.Add(singleRow);
             }
             listView_CleanSteps.EndUpdate();
+        }
+        private void EditCleanSteps(object sender, EventArgs e)
+        {
+            if (listView_CleanSteps.SelectedItems.Count == 0) return;
+            var index = int.Parse(listView_CleanSteps.SelectedItems[0].Text) - 1;
+            switch (((Button)sender).Name)
+            {
+                case "btn_EditStetp":
+                    string CurStep = Printer.CleanProcess[index].Trim('@', ';');
+                    if ("P" == CurStep.Substring(0, 1))
+                    {
+                        X_Painter xpt = new X_Painter();
+                        xpt.ShowDialog();
+                    }
+                    else if ("W" == CurStep.Substring(0, 1))
+                    {
+                        Y_Wiper ywp = new Y_Wiper();
+                        ywp.ShowDialog();
+                    }
+                    else if ("C" == CurStep.Substring(0, 1))
+                    {
+                        Z_Stage zsg = new Z_Stage();
+                        zsg.ShowDialog();
+                    }
+                    else if ("M" == CurStep.Substring(0, 1))
+                    {
+                        Pump_M ppm = new Pump_M();
+                        ppm.ShowDialog();
+                    }
+                    else if ("V" == CurStep.Substring(0, 1))
+                    {
+                        Pump_S pps = new Pump_S();
+                        pps.ShowDialog();
+                    }
+                    else if ("N" == CurStep.Substring(0, 1))
+                    {
+                        T_Delay tdy = new T_Delay();
+                        tdy.ShowDialog();
+                    }
+                    FlushActionList(Printer.CleanProcess);
+                    listView_CleanSteps.Focus();
+                    listView_CleanSteps.Items[index].Selected = true;
+                    break;
+                case "btn_UpStetp":
+                    List<string> NewOrderUp = new List<string>();
+                    if (index == 0) return;
+                    else
+                    {
+                        string temp = Printer.CleanProcess[index - 1];
+                        Printer.CleanProcess[index - 1] = Printer.CleanProcess[index];
+                        Printer.CleanProcess[index] = temp;
+                    }
+                    FlushActionList(Printer.CleanProcess);
+                    listView_CleanSteps.Focus();
+                    listView_CleanSteps.Items[index - 1].Selected = true;
+                    break;
+                case "btn_DownStetp":
+                    List<string> NewOrderDn = new List<string>();
+                    if (index == Printer.CleanProcess.Count - 1) return;
+                    else
+                    {
+                        string temp = Printer.CleanProcess[index + 1];
+                        Printer.CleanProcess[index + 1] = Printer.CleanProcess[index];
+                        Printer.CleanProcess[index] = temp;
+                    }
+                    FlushActionList(Printer.CleanProcess);
+                    listView_CleanSteps.Focus();
+                    listView_CleanSteps.Items[index + 1].Selected = true;
+                    break;
+                case "btn_DelStetp":
+                    Printer.CleanProcess.RemoveAt(index);
+                    FlushActionList(Printer.CleanProcess);
+                    if (Printer.CleanProcess.Count != 0 && index < Printer.CleanProcess.Count)
+                    {
+                        listView_CleanSteps.Focus();
+                        listView_CleanSteps.Items[index].Selected = true;
+                    }
+                    break;
+            }
+        }
+        private void listView_CleanSteps_DoubleClick(object sender, EventArgs e)
+        {
+            EditCleanSteps(btn_EditStetp, null);
         }
         private string ExplainAction(string act)
         {
@@ -990,7 +1105,7 @@ namespace CleanProApp
             saveProFileDialog.FileName = "";
             if (saveProFileDialog.ShowDialog() == DialogResult.OK)
             {
-                btn_Update.Visible = true;
+                //btn_Update.Visible = true;
                 string ProFile = saveProFileDialog.FileName;
                 InsertPreKSet();//追加流程头
                 Printer.CleanProcess.Add(@"@En0;");//追加流程尾
@@ -1112,6 +1227,7 @@ namespace CleanProApp
         {
             if (DialogResult.OK == MessageBox.Show("不玩了吗?", "温馨提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
             {
+                AppCfg.Default.Save();
                 e.Cancel = false;
             }
             else

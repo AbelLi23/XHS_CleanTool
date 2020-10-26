@@ -39,7 +39,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "X_Painter";
-            this.Text = "X_Painter";
+            this.Text = "小车编辑";
             this.ResumeLayout(false);
 
         }

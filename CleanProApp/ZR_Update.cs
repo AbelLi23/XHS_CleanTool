@@ -60,12 +60,6 @@ namespace CleanProApp
             HideCaret(txt_fileIn.Handle);
             HideCaret(txt_ptxt.Handle);
             HideCaret(txt_pdat.Handle);
-            //string test = string.Empty;
-            //for (int i = 0; i<20; i++)
-            //{
-            //    test += '\0';
-            //}
-            //var len = test.Length;
         }
         private void txt_ptxt_TextChanged(object sender, EventArgs e)
         {
@@ -134,7 +128,13 @@ namespace CleanProApp
             }
             else if ((Button)sender == btn_update)
             {
-
+                string DATA = string.Empty;
+                FileStream fs = new FileStream(fileIn, FileMode.Open, FileAccess.Read);
+                fs.Seek(0, SeekOrigin.Begin);
+                StreamReader sr = new StreamReader(fs);
+                DATA = sr.ReadToEnd();
+                bool SendSuccess = FormRoot.Printer.F_SendDatToPrt(DATA);
+                MessageBox.Show(SendSuccess ? "数据包已成功上传" : "上传失败", "提示:", MessageBoxButtons.OK, SendSuccess ? MessageBoxIcon.Asterisk : MessageBoxIcon.Error);
             }
         }
     }

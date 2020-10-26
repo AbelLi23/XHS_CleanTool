@@ -39,7 +39,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Y_Wiper";
-            this.Text = "Y_Wiper";
+            this.Text = "刮片编辑";
             this.ResumeLayout(false);
 
         }
