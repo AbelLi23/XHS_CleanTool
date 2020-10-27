@@ -34,7 +34,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int P_Vel_Min {
             get {
                 return ((int)(this["P_Vel_Min"]));
@@ -43,7 +43,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public float P_Vel_Rto {
             get {
                 return ((float)(this["P_Vel_Rto"]));
@@ -52,7 +52,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000000")]
         public int P_Pos_Max {
             get {
                 return ((int)(this["P_Pos_Max"]));
@@ -61,7 +61,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int P_Pos_Min {
             get {
                 return ((int)(this["P_Pos_Min"]));
@@ -71,9 +71,9 @@ namespace CleanProApp.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public float P_Posl_Rto {
+        public float P_Pos_Rto {
             get {
-                return ((float)(this["P_Posl_Rto"]));
+                return ((float)(this["P_Pos_Rto"]));
             }
         }
         
@@ -187,7 +187,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("7")]
         public int M_Pow_Max {
             get {
                 return ((int)(this["M_Pow_Max"]));
@@ -214,7 +214,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int M_WrT_Max {
             get {
                 return ((int)(this["M_WrT_Max"]));
@@ -223,7 +223,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_WrT_Min {
             get {
                 return ((int)(this["M_WrT_Min"]));
@@ -232,7 +232,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public float M_WrT_Rto {
             get {
                 return ((float)(this["M_WrT_Rto"]));
@@ -241,7 +241,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int M_SpT_Max {
             get {
                 return ((int)(this["M_SpT_Max"]));
@@ -250,7 +250,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_SpT_Min {
             get {
                 return ((int)(this["M_SpT_Min"]));
@@ -259,7 +259,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public float M_SpT_Rto {
             get {
                 return ((float)(this["M_SpT_Rto"]));
@@ -268,7 +268,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int M_Cyc_Max {
             get {
                 return ((int)(this["M_Cyc_Max"]));
@@ -295,7 +295,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int M_Ttt_Max {
             get {
                 return ((int)(this["M_Ttt_Max"]));
@@ -304,7 +304,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_Ttt_Min {
             get {
                 return ((int)(this["M_Ttt_Min"]));
@@ -322,7 +322,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("9")]
         public int V_Pow_Max {
             get {
                 return ((int)(this["V_Pow_Max"]));
@@ -349,7 +349,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int V_WrT_Max {
             get {
                 return ((int)(this["V_WrT_Max"]));
@@ -358,7 +358,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int V_WrT_Min {
             get {
                 return ((int)(this["V_WrT_Min"]));
@@ -367,7 +367,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public float V_WrT_Rto {
             get {
                 return ((float)(this["V_WrT_Rto"]));
@@ -376,7 +376,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int V_SpT_Max {
             get {
                 return ((int)(this["V_SpT_Max"]));
@@ -385,7 +385,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int V_SpT_Min {
             get {
                 return ((int)(this["V_SpT_Min"]));
@@ -394,7 +394,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public float V_SpT_Rto {
             get {
                 return ((float)(this["V_SpT_Rto"]));
@@ -403,7 +403,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int V_Cyc_Max {
             get {
                 return ((int)(this["V_Cyc_Max"]));
@@ -430,7 +430,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int N_Dly_Max {
             get {
                 return ((int)(this["N_Dly_Max"]));
@@ -439,7 +439,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int N_Dly_Min {
             get {
                 return ((int)(this["N_Dly_Min"]));
@@ -529,7 +529,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_WrT_K29 {
             get {
                 return ((int)(this["M_WrT_K29"]));
@@ -541,7 +541,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_SpT_K30 {
             get {
                 return ((int)(this["M_SpT_K30"]));
@@ -565,7 +565,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int M_Ttt_K22 {
             get {
                 return ((int)(this["M_Ttt_K22"]));
@@ -577,7 +577,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int N_Dly_K06 {
             get {
                 return ((int)(this["N_Dly_K06"]));
@@ -601,7 +601,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int V_WrT_Kvv {
             get {
                 return ((int)(this["V_WrT_Kvv"]));
@@ -613,7 +613,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int V_SpT_Kvv {
             get {
                 return ((int)(this["V_SpT_Kvv"]));
@@ -637,7 +637,7 @@ namespace CleanProApp.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int P_Vel_Kpp {
             get {
                 return ((int)(this["P_Vel_Kpp"]));

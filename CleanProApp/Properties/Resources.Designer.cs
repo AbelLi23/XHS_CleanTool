@@ -222,6 +222,26 @@ namespace CleanProApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PainterPos {
+            get {
+                object obj = ResourceManager.GetObject("PainterPos", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PainterVel {
+            get {
+                object obj = ResourceManager.GetObject("PainterVel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Pakdat {
             get {
                 object obj = ResourceManager.GetObject("Pakdat", resourceCulture);

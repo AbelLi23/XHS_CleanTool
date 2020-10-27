@@ -12,6 +12,8 @@ namespace CleanProApp
     public class Xprinter
     {
         #region Printer Interface
+        [DllImport("printer_interface", EntryPoint = "InitInterface")]
+        private static extern int InitInterface(IntPtr handle, int Msg);
         [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
         private static extern bool RequestUpgrade(int nTarget, string szRequestRst, IntPtr nBuffLen);
         #endregion
@@ -32,8 +34,8 @@ namespace CleanProApp
             for (int w = 0; w < W_YPos.Capacity; w++) W_YPos.Add(0);
             for (int c = 0; c < C_Level.Capacity; c++) C_Level.Add(0);
 
-            string Rst = ""; IntPtr RstLen = IntPtr.Zero;
-            bool isOK = RequestUpgrade(0, Rst, RstLen);
+            //string Rst = ""; IntPtr RstLen = IntPtr.Zero;
+            //bool isOK = RequestUpgrade(0, Rst, RstLen);
         }
         public List<Icon> IconRes;
         public List<Image> ImageList;
@@ -247,6 +249,48 @@ namespace CleanProApp
                         ProcessName = detail.Substring(2);
                         break;
                     case "K":
+                        var Kxxx = int.Parse(detail.Substring(2, 3));
+                        switch (Kxxx)
+                        {
+                            case 6:
+                                AppCfg.Default.N_Dly_K06 = int.Parse(detail.Substring(5));
+                                break;
+                            case 7:
+                                AppCfg.Default.V_Cyc_Kvv = int.Parse(detail.Substring(5));
+                                break;
+                            case 8:
+                                AppCfg.Default.C_Vel_K08 = int.Parse(detail.Substring(5));
+                                break;
+                            case 10:
+                                AppCfg.Default.M_Cyc_K10 = int.Parse(detail.Substring(5));
+                                break;
+                            case 12:
+                                AppCfg.Default.C_Pos2_K12 = int.Parse(detail.Substring(5));
+                                break;
+                            case 22:
+                                AppCfg.Default.M_Ttt_K22 = int.Parse(detail.Substring(5));
+                                break;
+                            case 26:
+                                AppCfg.Default.C_Pos1_K26 = int.Parse(detail.Substring(5));
+                                break;
+                            case 30:
+                                AppCfg.Default.M_SpT_K30 = int.Parse(detail.Substring(5));
+                                break;
+                            case 55:
+                                AppCfg.Default.W_Vel_K55 = int.Parse(detail.Substring(5));
+                                break;
+                            case 56:
+                                AppCfg.Default.M_Pow_K56 = int.Parse(detail.Substring(5));
+                                break;
+                            case 59:
+                                AppCfg.Default.C_Pos4_K59 = int.Parse(detail.Substring(5));
+                                break;
+                            case 74:
+                                AppCfg.Default.V_WrT_Kvv = int.Parse(detail.Substring(5));
+                                break;
+                            case 0:
+                                break;
+                        }
                         break;
                     case "w":
                         P_Counts = detail.Trim('w', '0').Length;
@@ -259,6 +303,7 @@ namespace CleanProApp
                         if ("p" == detail.Substring(1, 1))
                         {
                             int.TryParse(detail.Substring(2), out P_Speed);
+                            AppCfg.Default.P_Vel_Kpp = P_Speed;
                         }
                         else if ("0" == detail.Substring(1, 1))
                         {

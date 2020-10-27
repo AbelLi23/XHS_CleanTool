@@ -336,6 +336,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Pakdat.png" />
+    <None Include="res\PainterPos.png" />
+    <None Include="res\PainterVel.png" />
     <Content Include="XHS.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

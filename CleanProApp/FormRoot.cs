@@ -13,6 +13,7 @@ namespace CleanProApp
         public static Xprinter Printer;
         public int UnitSize = 30, GirdSize = 2;
         public static int P_ArrRow = 4, P_ArrCol = 4;
+        //public static DialogResult PnlMoveRst = DialogResult.None;
         public enum UIPages { StartPage, FirstStep, SecondStep, ThirdStep, FourthStep }
         public enum CleanMode { W1_C_PP, W1_C_P, W1C_PP, W1C_P, W0C_PP }//W1表示刮片能动, PP表示用小车来刮
         public FormRoot()
@@ -358,6 +359,11 @@ namespace CleanProApp
                 }
                 else
                 {
+                    if (Num_Used > 9)
+                    {
+                        MessageBox.Show("当前版本不支持该操作,请联系鑫海胜技术支持", "友情提示:", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                     label.Text = Num_Used.ToString() + '#';
                     Num_Used++;
                 }
@@ -423,9 +429,9 @@ namespace CleanProApp
                 trkBar_WaitTime.Value = AppCfg.Default.M_SpT_K30;//Printer.M_HoldTime;
                 trkBar_CycleNum.Value = AppCfg.Default.M_Cyc_K10;//Printer.M_CycleNum;
 
-                label_IntensityV.Text = (AppCfg.Default.M_Pow_Rto * trkBar_Intensity.Value).ToString() + "级";
+                label_IntensityV.Text = (AppCfg.Default.M_Pow_Rto * trkBar_Intensity.Value).ToString("#0.0") + "级";
                 label_WaitTimeV.Text = (AppCfg.Default.M_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = (AppCfg.Default.M_Cyc_Rto * trkBar_CycleNum.Value).ToString() + "次";
+                label_CycleNumV.Text = (AppCfg.Default.M_Cyc_Rto * trkBar_CycleNum.Value).ToString("#0.0") + "次";
             }
             else if (rBtn_V_Set == radioBtn)
             {
@@ -452,10 +458,10 @@ namespace CleanProApp
                 trkBar_WaitTime.Value = AppCfg.Default.V_SpT_Kvv;//Printer.V_HoldTime;
                 trkBar_CycleNum.Value = Printer.V_CycleNum;
 
-                label_IntensityV.Text = (AppCfg.Default.V_Pow_Rto * trkBar_Intensity.Value).ToString() + "级";
+                label_IntensityV.Text = (AppCfg.Default.V_Pow_Rto * trkBar_Intensity.Value).ToString("#0.0") + "级";
                 label_HoldTimeV.Text = (AppCfg.Default.V_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
                 label_WaitTimeV.Text = (AppCfg.Default.V_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Rto * trkBar_CycleNum.Value).ToString() + "次";
+                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Rto * trkBar_CycleNum.Value).ToString("#0.0") + "次";
             }
             else if (rBtn_N_Set == radioBtn)
             {
@@ -473,7 +479,7 @@ namespace CleanProApp
                 trkBar_HoldTime.Value = AppCfg.Default.N_Dly_K06;//Printer.N_WaitTime;
 
                 label_IntensityV.Visible = (radioBtn.Checked) ? false : true;
-                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
                 label_WaitTimeV.Visible = (radioBtn.Checked) ? false : true;
                 label_CycleNumV.Visible = (radioBtn.Checked) ? false : true;
             }
@@ -487,7 +493,7 @@ namespace CleanProApp
                 trkBar_HoldTime.Maximum = AppCfg.Default.M_Ttt_Max; trkBar_HoldTime.Minimum = AppCfg.Default.M_Ttt_Min;
                 trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
                 trkBar_HoldTime.Value = AppCfg.Default.M_Ttt_K22;//Printer.M_OnlyWorkTime;
-                label_HoldTimeV.Text = (AppCfg.Default.M_Ttt_Rto * trkBar_HoldTime.Value).ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.M_Ttt_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
             }
             else
             {
@@ -504,18 +510,25 @@ namespace CleanProApp
         {
             if (rBtn_N_Set.Checked)
             {
-                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.N_Dly_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
             }
             else if (rBtn_M_Set.Checked && chkBox_HoldTime.Checked)
             {
-                label_HoldTimeV.Text = (AppCfg.Default.M_WrT_Rto * trkBar_HoldTime.Value).ToString() + "秒";
+                label_HoldTimeV.Text = (AppCfg.Default.M_Ttt_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+            }
+            else if (rBtn_M_Set.Checked && !chkBox_HoldTime.Checked)
+            {
+                label_IntensityV.Text = (AppCfg.Default.M_Pow_Rto * trkBar_Intensity.Value).ToString("#0.0") + "级";
+                label_HoldTimeV.Text = (AppCfg.Default.M_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                label_WaitTimeV.Text = (AppCfg.Default.M_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
+                label_CycleNumV.Text = (AppCfg.Default.M_Cyc_Rto * trkBar_CycleNum.Value).ToString("#0.0") + "次";
             }
             else
             {
-                label_IntensityV.Text = (AppCfg.Default.V_Pow_Kvv * trkBar_Intensity.Value).ToString() + "级";
-                label_HoldTimeV.Text = (AppCfg.Default.V_WrT_Kvv * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
-                label_WaitTimeV.Text = (AppCfg.Default.V_SpT_Kvv * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
-                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Kvv * trkBar_CycleNum.Value).ToString() + "次";
+                label_IntensityV.Text = (AppCfg.Default.V_Pow_Rto * trkBar_Intensity.Value).ToString("#0.0") + "级";
+                label_HoldTimeV.Text = (AppCfg.Default.V_WrT_Rto * trkBar_HoldTime.Value).ToString("#0.0") + "秒";
+                label_WaitTimeV.Text = (AppCfg.Default.V_SpT_Rto * trkBar_WaitTime.Value).ToString("#0.0") + "秒";
+                label_CycleNumV.Text = (AppCfg.Default.V_Cyc_Rto * trkBar_CycleNum.Value).ToString("#0.0") + "次";
             }
         }
         private void btn_SetPumpPara_Click(object sender, EventArgs e)
@@ -709,7 +722,7 @@ namespace CleanProApp
                 case "P":
                     if ("p" == stepTag.Substring(1, 1))
                     {
-                        SingleStep = stepTag + Printer.P_Speed.ToString();
+                        SingleStep = stepTag + AppCfg.Default.P_Vel_Kpp.ToString();
                     }
                     else if ("0" == stepTag.Substring(1, 1))
                     {
@@ -748,13 +761,13 @@ namespace CleanProApp
                     }
                     else if ("1" == stepTag.Substring(1, 1))
                     {
-                        SingleStep = stepTag + "x" + Printer.M_Strength.ToString() + "p" + Printer.M_WorkTime.ToString() + "s"
-                            + Printer.M_HoldTime.ToString() + "n" + "0";//Printer.M_CycleNum.ToString()
+                        SingleStep = stepTag + "x" + AppCfg.Default.M_Pow_K56.ToString() + "p" + AppCfg.Default.M_WrT_K29.ToString() + "s"
+                            + AppCfg.Default.M_SpT_K30.ToString() + "n" + "0";//Printer.M_CycleNum.ToString()
                     }
                     break;
                 case "V":
-                    SingleStep = stepTag + Printer.V_Strength.ToString() + "p" + Printer.V_WorkTime.ToString() + "s"
-                        + Printer.V_HoldTime.ToString() + "n" + "0";
+                    SingleStep = stepTag + AppCfg.Default.V_Pow_Kvv.ToString() + "p" + AppCfg.Default.V_WrT_Kvv.ToString() + "s"
+                        + AppCfg.Default.V_SpT_Kvv.ToString() + "n" + AppCfg.Default.V_Cyc_Kvv.ToString();
                     break;
                 case "N":
                     SingleStep = stepTag;
@@ -947,6 +960,61 @@ namespace CleanProApp
             }
             listView_CleanSteps.EndUpdate();
         }
+        private void ManualAddSteps(object sender, EventArgs e)
+        {
+            if (listView_CleanSteps.SelectedItems.Count == 0) return;
+            var index = int.Parse(listView_CleanSteps.SelectedItems[0].Text) - 1;
+            switch (((Button)sender).Name)
+            {
+                case "btn_PumpM":
+                    if (DialogResult.OK == MessageBox.Show("点击'确定'添加正常墨泵动作, 点击'取消'则添加抽废墨动作", "?",
+                        MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
+                        Printer.CleanProcess.Insert(index + 1, AddSingleStep("M1"));
+                    else
+                        Printer.CleanProcess.Insert(index + 1, AddSingleStep("M0"));
+                    break;
+                case "btn_Delay":
+                    Printer.CleanProcess.Insert(index + 1, AddSingleStep("Nr0"));
+                    break;
+                case "btn_Painter":
+                    X_Painter xpt = new X_Painter(index, true);
+                    DialogResult xptRst = xpt.ShowDialog();
+                    if (xptRst == DialogResult.Cancel || xptRst == DialogResult.No || xptRst == DialogResult.None)
+                    {
+                        listView_CleanSteps.Focus();
+                        listView_CleanSteps.Items[index].Selected = true;
+                        return;
+                    }
+                    break;
+                case "btn_Wiper":
+                    Y_Wiper ywp = new Y_Wiper(index, true);
+                    DialogResult ywpRst = ywp.ShowDialog();
+                    if (ywpRst == DialogResult.Cancel || ywpRst == DialogResult.No || ywpRst == DialogResult.None)
+                    {
+                        listView_CleanSteps.Focus();
+                        listView_CleanSteps.Items[index].Selected = true;
+                        return;
+                    }
+                    break;
+                case "btn_Stage":
+                    Z_Stage zsg = new Z_Stage(index, true);
+                    DialogResult zsgRst = zsg.ShowDialog();
+                    if (zsgRst == DialogResult.Cancel || zsgRst == DialogResult.No || zsgRst == DialogResult.None)
+                    {
+                        listView_CleanSteps.Focus();
+                        listView_CleanSteps.Items[index].Selected = true;
+                        return;
+                    }
+                    break;
+                case "btn_PumpS":
+                    Printer.CleanProcess.Insert(index + 1, AddSingleStep("V"));
+                    break;
+            }
+            FlushActionList(Printer.CleanProcess);
+            listView_CleanSteps.Focus();
+            listView_CleanSteps.Items[index + 1].Selected = true;
+            listView_CleanSteps.EnsureVisible(index + 1);
+        }
         private void EditCleanSteps(object sender, EventArgs e)
         {
             if (listView_CleanSteps.SelectedItems.Count == 0) return;
@@ -957,37 +1025,38 @@ namespace CleanProApp
                     string CurStep = Printer.CleanProcess[index].Trim('@', ';');
                     if ("P" == CurStep.Substring(0, 1))
                     {
-                        X_Painter xpt = new X_Painter();
+                        X_Painter xpt = new X_Painter(index, false);
                         xpt.ShowDialog();
                     }
                     else if ("W" == CurStep.Substring(0, 1))
                     {
-                        Y_Wiper ywp = new Y_Wiper();
+                        Y_Wiper ywp = new Y_Wiper(index, false);
                         ywp.ShowDialog();
                     }
                     else if ("C" == CurStep.Substring(0, 1))
                     {
-                        Z_Stage zsg = new Z_Stage();
+                        Z_Stage zsg = new Z_Stage(index, false);
                         zsg.ShowDialog();
                     }
                     else if ("M" == CurStep.Substring(0, 1))
                     {
-                        Pump_M ppm = new Pump_M();
+                        Pump_M ppm = new Pump_M(index);
                         ppm.ShowDialog();
                     }
                     else if ("V" == CurStep.Substring(0, 1))
                     {
-                        Pump_S pps = new Pump_S();
+                        Pump_S pps = new Pump_S(index);
                         pps.ShowDialog();
                     }
                     else if ("N" == CurStep.Substring(0, 1))
                     {
-                        T_Delay tdy = new T_Delay();
+                        T_Delay tdy = new T_Delay(index);
                         tdy.ShowDialog();
                     }
                     FlushActionList(Printer.CleanProcess);
                     listView_CleanSteps.Focus();
                     listView_CleanSteps.Items[index].Selected = true;
+                    listView_CleanSteps.EnsureVisible(index);
                     break;
                 case "btn_UpStetp":
                     List<string> NewOrderUp = new List<string>();
@@ -1001,6 +1070,7 @@ namespace CleanProApp
                     FlushActionList(Printer.CleanProcess);
                     listView_CleanSteps.Focus();
                     listView_CleanSteps.Items[index - 1].Selected = true;
+                    listView_CleanSteps.EnsureVisible(index - 1);
                     break;
                 case "btn_DownStetp":
                     List<string> NewOrderDn = new List<string>();
@@ -1014,6 +1084,7 @@ namespace CleanProApp
                     FlushActionList(Printer.CleanProcess);
                     listView_CleanSteps.Focus();
                     listView_CleanSteps.Items[index + 1].Selected = true;
+                    listView_CleanSteps.EnsureVisible(index + 1);
                     break;
                 case "btn_DelStetp":
                     Printer.CleanProcess.RemoveAt(index);
@@ -1022,6 +1093,7 @@ namespace CleanProApp
                     {
                         listView_CleanSteps.Focus();
                         listView_CleanSteps.Items[index].Selected = true;
+                        listView_CleanSteps.EnsureVisible(index);
                     }
                     break;
             }
@@ -1041,7 +1113,7 @@ namespace CleanProApp
                     {
                         var Vel = 0; int.TryParse(act.Substring(2), out Vel);
                         if (Vel == 0) description = "小车速度设定为:【最慢】";
-                        else description = string.Format("小车速度设定为:【{0}】", (0.1 * Vel).ToString("#0.0") + "(m/s)");
+                        else description = string.Format("小车速度设定为:【{0}】", (AppCfg.Default.P_Vel_Rto * Vel).ToString("#0.0") + "(m/s)");
                     }
                     else if ("0" == act.Substring(1, 1))
                     {
@@ -1073,29 +1145,48 @@ namespace CleanProApp
                     description = string.Format("墨栈到达【{0}高度】", Printer.C_LevelMark[cn]);
                     break;
                 case "M":
-                    if ("M0999" == act) description = string.Format("墨泵吸墨【{0}秒】", Printer.M_OnlyWorkTime);
+                    if ("M0999" == act) description = string.Format("墨泵吸墨【{0}秒】",
+                        (AppCfg.Default.M_Ttt_K22 * AppCfg.Default.M_Ttt_Rto).ToString("#0.0"));
                     else
                     {
                         description = string.Format("墨泵工作【{0}级强度】【单次运转{1}秒】【单次停止{2}秒】【循环{3}次】",
-                            Printer.M_Strength, Printer.M_WorkTime, Printer.M_HoldTime, Printer.M_CycleNum);
+                            (AppCfg.Default.M_Pow_K56 * AppCfg.Default.M_Pow_Rto).ToString("#0.0"),
+                            (AppCfg.Default.M_WrT_K29 * AppCfg.Default.M_WrT_Rto).ToString("#0.0"),
+                            (AppCfg.Default.M_SpT_K30 * AppCfg.Default.M_SpT_Rto).ToString("#0.0"),
+                            (AppCfg.Default.M_Cyc_K10 * AppCfg.Default.M_Cyc_Rto).ToString("#0.0"));
                     }
                     break;
                 case "V":
                     description = string.Format("闪喷工作【{0}级强度】【单次闪喷{1}秒】【单次停止{2}秒】【循环{3}次】",
-                            Printer.V_Strength, Printer.V_WorkTime, Printer.V_HoldTime, Printer.V_CycleNum);
+                            (AppCfg.Default.V_Pow_Kvv * AppCfg.Default.V_Pow_Rto).ToString("#0.0"),
+                            (AppCfg.Default.V_WrT_Kvv * AppCfg.Default.V_WrT_Rto).ToString("#0.0"),
+                            (AppCfg.Default.V_SpT_Kvv * AppCfg.Default.V_SpT_Rto).ToString("#0.0"),
+                            (AppCfg.Default.V_Cyc_Kvv * AppCfg.Default.V_Cyc_Rto).ToString("#0.0"));
                     break;
                 case "N":
-                    description = string.Format("延时【{0}秒】", Printer.N_WaitTime);
+                    description = string.Format("延时【{0}秒】", (AppCfg.Default.N_Dly_K06 * AppCfg.Default.N_Dly_Rto).ToString("#0.0"));
                     break;
             }
             return description;
         }
-        private void InsertPreKSet()
+        private void InsertPreKSet(List<string> finalProc)
         {
+            finalProc.Insert(0, Printer.p_IndexStr);
+            finalProc.Insert(0, Printer.w_IndexStr);
             //预先设定K值的部分
-            Printer.CleanProcess.Insert(0, Printer.p_IndexStr);
-            Printer.CleanProcess.Insert(0, Printer.w_IndexStr);
-            Printer.CleanProcess.Insert(0, string.Format(@"@B{0}{1};", Printer.P_Type, Printer.ProcessName));
+            finalProc.Insert(0, string.Format("@K1006{0}", AppCfg.Default.N_Dly_K06.ToString()));
+            finalProc.Insert(0, string.Format("@K1007{0}", AppCfg.Default.V_Cyc_Kvv.ToString()));
+            finalProc.Insert(0, string.Format("@K1074{0}", AppCfg.Default.V_WrT_Kvv.ToString()));
+            finalProc.Insert(0, string.Format("@K1010{0}", AppCfg.Default.M_Cyc_K10.ToString()));
+            finalProc.Insert(0, string.Format("@K1030{0}", AppCfg.Default.M_SpT_K30.ToString()));
+            finalProc.Insert(0, string.Format("@K1029{0}", AppCfg.Default.M_WrT_K29.ToString()));
+            finalProc.Insert(0, string.Format("@K1056{0}", AppCfg.Default.M_Pow_K56.ToString()));
+            finalProc.Insert(0, string.Format("@K1059{0};", AppCfg.Default.C_Pos4_K59.ToString()));
+            finalProc.Insert(0, string.Format("@K1012{0};", AppCfg.Default.C_Pos2_K12.ToString()));
+            finalProc.Insert(0, string.Format("@K1026{0};", AppCfg.Default.C_Pos1_K26.ToString()));
+            finalProc.Insert(0, string.Format("@K1055{0};", AppCfg.Default.W_Vel_K55.ToString()));
+            //预先设定K值的部分
+            finalProc.Insert(0, string.Format(@"@B{0}{1};", Printer.P_Type, Printer.ProcessName));
         }
         private void SaveProcessFile()
         {
@@ -1107,9 +1198,10 @@ namespace CleanProApp
             {
                 //btn_Update.Visible = true;
                 string ProFile = saveProFileDialog.FileName;
-                InsertPreKSet();//追加流程头
-                Printer.CleanProcess.Add(@"@En0;");//追加流程尾
-                Printer.F_SaveProcess(Printer.CleanProcess, ProFile);
+                List<string> allStep = new List<string>(Printer.CleanProcess);
+                InsertPreKSet(allStep);//追加流程头
+                allStep.Add(@"@En0;");//追加流程尾
+                Printer.F_SaveProcess(allStep, ProFile);
             }
         }
         private void btn_Update_Click(object sender, EventArgs e)

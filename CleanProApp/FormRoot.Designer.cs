@@ -916,9 +916,9 @@
             this.chkBox_HoldTime.Location = new System.Drawing.Point(85, 40);
             this.chkBox_HoldTime.Margin = new System.Windows.Forms.Padding(0);
             this.chkBox_HoldTime.Name = "chkBox_HoldTime";
-            this.chkBox_HoldTime.Size = new System.Drawing.Size(111, 21);
+            this.chkBox_HoldTime.Size = new System.Drawing.Size(135, 21);
             this.chkBox_HoldTime.TabIndex = 17;
-            this.chkBox_HoldTime.Text = "只控制抽墨时长";
+            this.chkBox_HoldTime.Text = "单独控制抽废墨时长";
             this.chkBox_HoldTime.UseVisualStyleBackColor = true;
             this.chkBox_HoldTime.Visible = false;
             this.chkBox_HoldTime.CheckedChanged += new System.EventHandler(this.chkBox_HoldTime_CheckedChanged);
@@ -1361,6 +1361,7 @@
             this.btn_Delay.Text = "延时";
             this.btn_Delay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_Delay.UseVisualStyleBackColor = true;
+            this.btn_Delay.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // btn_Painter
             // 
@@ -1377,6 +1378,7 @@
             this.btn_Painter.Text = "小车";
             this.btn_Painter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_Painter.UseVisualStyleBackColor = true;
+            this.btn_Painter.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // btn_Wiper
             // 
@@ -1393,6 +1395,7 @@
             this.btn_Wiper.Text = "刮片";
             this.btn_Wiper.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_Wiper.UseVisualStyleBackColor = true;
+            this.btn_Wiper.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // btn_PumpM
             // 
@@ -1409,6 +1412,7 @@
             this.btn_PumpM.Text = "墨泵";
             this.btn_PumpM.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_PumpM.UseVisualStyleBackColor = true;
+            this.btn_PumpM.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // btn_Stage
             // 
@@ -1425,6 +1429,7 @@
             this.btn_Stage.Text = "墨栈";
             this.btn_Stage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_Stage.UseVisualStyleBackColor = true;
+            this.btn_Stage.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // btn_PumpS
             // 
@@ -1441,6 +1446,7 @@
             this.btn_PumpS.Text = "闪喷";
             this.btn_PumpS.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_PumpS.UseVisualStyleBackColor = true;
+            this.btn_PumpS.Click += new System.EventHandler(this.ManualAddSteps);
             // 
             // listView_CleanSteps
             // 
