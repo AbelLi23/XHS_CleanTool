@@ -43,6 +43,7 @@
             this.btn_FirstNext = new System.Windows.Forms.Button();
             this.btn_FirstBack = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveProFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.btn_NewFile = new System.Windows.Forms.Button();
@@ -312,6 +313,7 @@
             // 
             this.statusStrip.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel2,
             this.toolStripStatusLabel1});
             this.statusStrip.Location = new System.Drawing.Point(0, 699);
             this.statusStrip.Name = "statusStrip";
@@ -319,11 +321,17 @@
             this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 1;
             // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(131, 17);
+            this.toolStripStatusLabel2.Text = "toolStripStatusLabel2";
+            // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(1312, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(1181, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1318,6 +1326,7 @@
             this.btn_TestStetp.Text = "测试";
             this.btn_TestStetp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btn_TestStetp.UseVisualStyleBackColor = true;
+            this.btn_TestStetp.Click += new System.EventHandler(this.TestSingleStep);
             // 
             // pnl_Actions
             // 
@@ -1692,6 +1701,7 @@
         private System.Windows.Forms.Button btn_SetDat;
         private System.Windows.Forms.Button btn_NewDat;
         private System.Windows.Forms.Button btn_Update;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
     }
 }
 

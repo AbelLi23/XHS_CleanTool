@@ -37,10 +37,10 @@
             this.btn_toDat = new System.Windows.Forms.Button();
             this.btn_update = new System.Windows.Forms.Button();
             this.pnl_toDat = new System.Windows.Forms.Panel();
-            this.pnl_update = new System.Windows.Forms.Panel();
-            this.pnl_FileIn = new System.Windows.Forms.Panel();
             this.btn_opentxt = new System.Windows.Forms.Button();
+            this.pnl_update = new System.Windows.Forms.Panel();
             this.btn_opendat = new System.Windows.Forms.Button();
+            this.pnl_FileIn = new System.Windows.Forms.Panel();
             this.pnl_toDat.SuspendLayout();
             this.pnl_update.SuspendLayout();
             this.pnl_FileIn.SuspendLayout();
@@ -164,28 +164,6 @@
             this.pnl_toDat.Size = new System.Drawing.Size(300, 52);
             this.pnl_toDat.TabIndex = 8;
             // 
-            // pnl_update
-            // 
-            this.pnl_update.Controls.Add(this.btn_opendat);
-            this.pnl_update.Controls.Add(this.label_prodat);
-            this.pnl_update.Controls.Add(this.txt_pdat);
-            this.pnl_update.Controls.Add(this.btn_update);
-            this.pnl_update.Location = new System.Drawing.Point(53, 224);
-            this.pnl_update.Margin = new System.Windows.Forms.Padding(0);
-            this.pnl_update.Name = "pnl_update";
-            this.pnl_update.Size = new System.Drawing.Size(300, 52);
-            this.pnl_update.TabIndex = 9;
-            // 
-            // pnl_FileIn
-            // 
-            this.pnl_FileIn.Controls.Add(this.label_fileIn);
-            this.pnl_FileIn.Controls.Add(this.txt_fileIn);
-            this.pnl_FileIn.Location = new System.Drawing.Point(113, 36);
-            this.pnl_FileIn.Margin = new System.Windows.Forms.Padding(0);
-            this.pnl_FileIn.Name = "pnl_FileIn";
-            this.pnl_FileIn.Size = new System.Drawing.Size(152, 102);
-            this.pnl_FileIn.TabIndex = 9;
-            // 
             // btn_opentxt
             // 
             this.btn_opentxt.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -199,6 +177,18 @@
             this.btn_opentxt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btn_opentxt.UseVisualStyleBackColor = false;
             this.btn_opentxt.Click += new System.EventHandler(this.btn_opentxt_Click);
+            // 
+            // pnl_update
+            // 
+            this.pnl_update.Controls.Add(this.btn_opendat);
+            this.pnl_update.Controls.Add(this.label_prodat);
+            this.pnl_update.Controls.Add(this.txt_pdat);
+            this.pnl_update.Controls.Add(this.btn_update);
+            this.pnl_update.Location = new System.Drawing.Point(53, 224);
+            this.pnl_update.Margin = new System.Windows.Forms.Padding(0);
+            this.pnl_update.Name = "pnl_update";
+            this.pnl_update.Size = new System.Drawing.Size(300, 52);
+            this.pnl_update.TabIndex = 9;
             // 
             // btn_opendat
             // 
@@ -214,11 +204,21 @@
             this.btn_opendat.UseVisualStyleBackColor = false;
             this.btn_opendat.Click += new System.EventHandler(this.btn_opentxt_Click);
             // 
+            // pnl_FileIn
+            // 
+            this.pnl_FileIn.Controls.Add(this.label_fileIn);
+            this.pnl_FileIn.Controls.Add(this.txt_fileIn);
+            this.pnl_FileIn.Location = new System.Drawing.Point(113, 36);
+            this.pnl_FileIn.Margin = new System.Windows.Forms.Padding(0);
+            this.pnl_FileIn.Name = "pnl_FileIn";
+            this.pnl_FileIn.Size = new System.Drawing.Size(152, 102);
+            this.pnl_FileIn.TabIndex = 9;
+            // 
             // ZR_Update
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 304);
+            this.ClientSize = new System.Drawing.Size(404, 306);
             this.Controls.Add(this.pnl_FileIn);
             this.Controls.Add(this.pnl_update);
             this.Controls.Add(this.pnl_toDat);

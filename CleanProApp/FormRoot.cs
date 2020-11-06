@@ -5,17 +5,30 @@ using System.Windows.Forms;
 
 namespace CleanProApp
 {
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Threading;
     using AppCfg = CleanProApp.Properties.Settings;
     using AppRes = CleanProApp.Properties.Resources;
     public partial class FormRoot : Form
     {
         //Create a new global instance
         public static Xprinter Printer;
+        public static Socket CtrlSite_CMD, CtrlSite_Data;
         public int UnitSize = 30, GirdSize = 2;
         public static int P_ArrRow = 4, P_ArrCol = 4;
         //public static DialogResult PnlMoveRst = DialogResult.None;
         public enum UIPages { StartPage, FirstStep, SecondStep, ThirdStep, FourthStep }
         public enum CleanMode { W1_C_PP, W1_C_P, W1C_PP, W1C_P, W0C_PP }//W1表示刮片能动, PP表示用小车来刮
+        //UDP session
+        Socket cmdSKT = null, datSKT = null;
+        IPEndPoint cmdEnd = null, datEnd = null;
+        string datMSG = string.Empty;
+        byte[] cmdMSG = new byte[1024 * 1024];
+        const byte SOH = 0x01, EOT = 0x04, ESC = 0x1b;
+
         public FormRoot()
         {
             this.Icon = AppRes.XHS;
@@ -29,10 +42,47 @@ namespace CleanProApp
             this.ClientSize = new Size(800, 600);
             //Create a new global instance
             Printer = new Xprinter();
-            Printer.IconRes = new List<Icon>(new Icon[] { AppRes.Painter1, AppRes.Wiper1, AppRes.Stage1, AppRes.PumpM1, AppRes.PumpS1, AppRes.Delay1, AppRes.Update });
+            Printer.IconRes = new List<Icon>(new Icon[] { AppRes.Painter1, AppRes.Wiper1, AppRes.Stage1, AppRes.PumpM1, AppRes.PumpS1, AppRes.Delay1, AppRes.Update, AppRes.NetSet });
             Printer.ImageList = new List<Image>(new Image[] { AppRes.Painter, AppRes.Wiper, AppRes.Stage, AppRes.PumpM, AppRes.PumpS, AppRes.DelayImg });
+            //Check and Diagnose Net Connect
+            ConnectAndDiagnose();
         }
+        private void datMSGBack(object obj)
+        {
+            while (true)
+            {
+                EndPoint point = new IPEndPoint(IPAddress.Any, 0);
+                byte[] buffer = new byte[1024 * 1024];
+                int length = datSKT.ReceiveFrom(buffer, ref point);
+                datMSG = Encoding.ASCII.GetString(buffer, 0, length);
+            }
+        }
+        private void cmdMSGBack(object obj)
+        {
+            while (true)
+            {
+                EndPoint point = new IPEndPoint(IPAddress.Any, 0);
+                byte[] buffer = new byte[1024 * 1024];
+                int length = cmdSKT.ReceiveFrom(cmdMSG, ref point);
+                //cmdMSG = buffer;//Encoding.ASCII.GetString(buffer, 0, length);
+            }
+        }
+        private void datMSGSend(string msg)
+        {
+            string PrtIP = Printer.F_ReadINI("Channel0Param", "DestIp", "", ZS_SetNet.INIFile);
+            int datPort = int.Parse(Printer.F_ReadINI("Channel0Param", "DataPort", "", ZS_SetNet.INIFile));
+            EndPoint point = new IPEndPoint(IPAddress.Parse(PrtIP), datPort);
 
+            datSKT.SendTo(Encoding.ASCII.GetBytes(msg), point);
+        }
+        private void cmdMSGSend(byte[] msg)
+        {
+            string PrtIP = Printer.F_ReadINI("Channel0Param", "DestIp", "", ZS_SetNet.INIFile);
+            int cmdPort = int.Parse(Printer.F_ReadINI("Channel0Param", "CmdPort", "", ZS_SetNet.INIFile));
+            EndPoint point = new IPEndPoint(IPAddress.Parse(PrtIP), cmdPort);
+
+            cmdSKT.SendTo(msg, point);//Encoding.ASCII.GetBytes(msg)
+        }
         private void FormRoot_Load(object sender, EventArgs e)
         {
             RenderUI(UIPages.StartPage);
@@ -220,6 +270,12 @@ namespace CleanProApp
                     break;
                 case "btn_ThirdBack":
                     GetNewData(UIPages.ThirdStep);
+                    if (!Printer.OfflineUse)
+                    {
+                        EnDBG = !SetDebugClean(false);
+                        toolStripStatusLabel2.Text = string.Format("打印机当前状态:【{0}】", (!EnDBG) ? "在线" : "未知");
+                        toolStripStatusLabel2.BackColor = (!EnDBG) ? Color.LightGreen : Color.OrangeRed;
+                    }
                     RenderUI(UIPages.SecondStep);
                     page_ShowStep(UIPages.SecondStep);
                     break;
@@ -252,6 +308,12 @@ namespace CleanProApp
                         return;
                     }
                     RenderUI(UIPages.ThirdStep);
+                    if (!Printer.OfflineUse)
+                    {
+                        EnDBG = SetDebugClean(true);
+                        toolStripStatusLabel2.Text = string.Format("打印机当前状态:【{0}】", (EnDBG) ? "调试" : "在线");
+                        toolStripStatusLabel2.BackColor = (EnDBG) ? Color.SkyBlue : Color.LightGreen;
+                    }
                     page_ShowStep(UIPages.ThirdStep);
                     break;
                 case "btn_ThirdNext":
@@ -540,6 +602,8 @@ namespace CleanProApp
                 {
                     //Printer.M_OnlyWorkTime = trkBar_HoldTime.Value;
                     AppCfg.Default.M_Ttt_K22 = trkBar_HoldTime.Value;
+
+                    var rst = SetSingleKVal(22, AppCfg.Default.M_Ttt_K22);
                 }
                 else
                 {
@@ -960,6 +1024,10 @@ namespace CleanProApp
             }
             listView_CleanSteps.EndUpdate();
         }
+        private void TestSingleStep(object sender, EventArgs e)
+        {
+            SendStepCmd(Printer.CleanProcess[0]);
+        }
         private void ManualAddSteps(object sender, EventArgs e)
         {
             if (listView_CleanSteps.SelectedItems.Count == 0) return;
@@ -1221,6 +1289,8 @@ namespace CleanProApp
                     var WeekDay = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
                     toolStripStatusLabel1.Text = string.Format("今天是 {0} [ {1} ]", DateNow, WeekDay);
                     toolStripStatusLabel1.Alignment = ToolStripItemAlignment.Right;
+                    toolStripStatusLabel2.Text = string.Format("打印机当前状态:【{0}】", (Printer.OfflineUse) ? "离线" : "在线");
+                    toolStripStatusLabel2.BackColor = (Printer.OfflineUse) ? Color.LightYellow : Color.LightGreen;
                     break;
                 case UIPages.FirstStep:
                     pnl_direct.Visible = Printer.W_Enable || Printer.WC_Enable;
@@ -1315,6 +1385,228 @@ namespace CleanProApp
         }
         #endregion
 
+        #region Connect Printer and Diagnose
+        private void ConnectAndDiagnose()
+        {
+            string PrtIP = Printer.F_ReadINI("Channel0Param", "DestIp", "", ZS_SetNet.INIFile);
+            string LocIP = Printer.F_ReadINI("Channel0Param", "LocalIp", "", ZS_SetNet.INIFile);
+            int cmdPort = int.Parse(Printer.F_ReadINI("Channel0Param", "CmdPort", "", ZS_SetNet.INIFile));
+            int datPort = int.Parse(Printer.F_ReadINI("Channel0Param", "DataPort", "", ZS_SetNet.INIFile));
+
+            ZS_SetNet netSet = new ZS_SetNet();
+            //var stat = InitInterface(netSet.Handle, 0);
+            int milsec = 2000;
+            var stat = Printer.Net_PingIsOK(PrtIP, milsec);//, milsec
+            if (!stat)
+            {
+                if (DialogResult.Yes == MessageBox.Show("连接打印机失败,选择【是】前往设置网络,选择【否】则脱机使用该工具", "连接失败", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                    netSet.ShowDialog();
+                else
+                {
+                    Printer.OfflineUse = true;
+                }
+            }
+
+            if (!Printer.OfflineUse)
+            {
+                //Create local socket
+                try
+                {
+                    cmdSKT = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    cmdEnd = new IPEndPoint(IPAddress.Parse(LocIP), cmdPort); cmdSKT.Bind(cmdEnd);
+                    Thread tc = new Thread(cmdMSGBack);
+                    tc.IsBackground = true;
+                    tc.Start();
+
+                    datSKT = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    datEnd = new IPEndPoint(IPAddress.Parse(LocIP), datPort); datSKT.Bind(datEnd);
+                    Thread td = new Thread(datMSGBack);
+                    td.IsBackground = true;
+                    td.Start();
+                }
+                catch (SocketException)
+                {
+                    if (DialogResult.Yes == MessageBox.Show("本地IP与配置文件设定值不一致,选择【是】重新设置本地IP,选择【否】则脱机使用该工具", "连接失败", MessageBoxButtons.YesNo, MessageBoxIcon.Warning))
+                        netSet.ShowDialog();
+                    else
+                    {
+                        Printer.OfflineUse = true;
+                    }
+                    //MessageBox.Show(se.ToString());
+                }
+            }
+        }
+        #endregion
+
+        //NetWork and printer Interface
+        #region NetWork Set & Printer Interface
+        //NetWork
+        public bool PrtReady = true;
+        //Printer API
+        [DllImport("printer_interface", EntryPoint = "InitInterface")]
+        private static extern int InitInterface(IntPtr handle, uint Msg);
+        [DllImport("printer_interface", EntryPoint = "CloseInterface")]
+        private static extern int CloseInterface();
+
+        [DllImport("printer_interface", EntryPoint = "StartTransferData")]
+        private static extern bool StartTransferData();
+        [DllImport("printer_interface", EntryPoint = "SendData")]
+        private static extern int SendData(byte[] pData, long nLength, int nPortIndex);
+        [DllImport("printer_interface", EntryPoint = "EndTransferData")]
+        private static extern bool EndTransferData();
+
+        [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
+        private static extern bool RequestUpgrade(int nTarget, ref byte[] szRequestRst, ref int nBuffLen);
+
+        public bool EnDBG = true;
+        private bool SetDebugClean(bool enable)
+        {
+            //byte[] CmdStr = new byte[1024];
+            List<byte> CmdLst = new List<byte>();
+            //Length
+            byte[] Length = new byte[] { 0x06, 0x00 };
+            CmdLst.AddRange(Length);
+            //CmdInfo
+            byte[] CmdInf = new byte[] { 0x32, 0x62 };
+            CmdLst.AddRange(CmdInf);
+            //Data
+            byte onoff = (byte)(enable ? 0x01 : 0x00);
+            CmdLst.Add(onoff);
+            CmdLst.Add(Printer.M_OnOff);
+            //CRC
+            byte[] CRCrst = Printer.Net_CRC16(CmdLst);
+            CmdLst.AddRange(CRCrst);
+            //SOH EOT ESC
+            CmdLst = EscapeSpecial(CmdLst); CmdLst.Insert(0, SOH); CmdLst.Add(EOT);
+            CmdLst.InsertRange(0, new byte[] { 0xCD, 0, 0, 0 });
+
+            //******Send & Receive
+            cmdMSGSend(CmdLst.ToArray());
+            Thread.Sleep(100);
+            //extract the data
+            List<byte> rsv = new List<byte>(cmdMSG);
+            //rsv.RemoveRange(0, 4);
+            int index = rsv.FindIndex(a => (a == EOT));
+            rsv.RemoveRange(index, rsv.Count - index);
+            rsv.RemoveAt(0);
+            var databytes = DecodeSpecial(rsv);
+            Array.Clear(cmdMSG, 0, cmdMSG.Length);
+
+            //******Analyze data
+            databytes.RemoveRange(0, 4);
+            databytes.RemoveAt(databytes.Count - 1);
+            databytes.RemoveAt(databytes.Count - 1);
+            List<byte> dataBack = new List<byte>(databytes);
+
+            //return true; //For Debug
+            if (dataBack.Count != 1) return false;
+            else
+            {
+                return (dataBack[0] == 0x01) ? true : false;
+            }
+        }
+        private bool SendStepCmd(string sglStep)
+        {
+            byte[] OrgStep = Encoding.ASCII.GetBytes(sglStep);
+
+            return true;
+        }
+        private bool SetSingleKVal(int Knum, int Kval)
+        {
+            List<byte> CmdLst = new List<byte>();
+            //Length
+            byte[] Length = new byte[] { 0x07, 0x00 };
+            CmdLst.AddRange(Length);
+            //CmdInfo
+            byte[] CmdInf = new byte[] { 0x31, 0x34 };
+            CmdLst.AddRange(CmdInf);
+            //Data
+            ushort knum = (ushort)(Knum & 0x00FF);
+            CmdLst.Add((byte)(knum & 0xFF));
+            CmdLst.Add((byte)((knum >> 8) & 0xFF));
+            CmdLst.Add((byte)(Kval & 0xFF));
+            //CRC
+            byte[] CRCrst = Printer.Net_CRC16(CmdLst);
+            CmdLst.AddRange(CRCrst);
+            //SOH EOT ESC
+            CmdLst = EscapeSpecial(CmdLst); CmdLst.Insert(0, SOH); CmdLst.Add(EOT);
+            CmdLst.InsertRange(0, new byte[] { 0xCD, 0, 0, 0 });
+
+            //******Send & Receive
+            cmdMSGSend(CmdLst.ToArray());
+            Thread.Sleep(100);
+            //extract the data
+            List<byte> rsv = new List<byte>(cmdMSG);
+            //rsv.RemoveRange(0, 4);
+            int index = rsv.FindIndex(a => (a == EOT));
+            rsv.RemoveRange(index, rsv.Count - index);
+            rsv.RemoveRange(0, 4);
+            rsv.RemoveAt(0);
+            var databytes = DecodeSpecial(rsv);
+            Array.Clear(cmdMSG, 0, cmdMSG.Length);
+
+            //******Analyze data
+            databytes.RemoveRange(0, 4);
+            databytes.RemoveAt(databytes.Count - 1);
+            databytes.RemoveAt(databytes.Count - 1);
+            List<byte> dataBack = new List<byte>(databytes);
+
+            if (dataBack.Count != 1) return false;
+            else
+            {
+                return (dataBack[0] == 0x01) ? true : false;
+            }
+        }
+        private List<byte> EscapeSpecial(List<byte> bytelist)
+        {
+            List<byte> afterConvert = new List<byte>(bytelist);
+            int cnt = 0;
+            foreach (byte bt in bytelist)
+            {
+                switch (bt)
+                {
+                    case SOH:
+                        afterConvert[cnt] = 0x1B;
+                        afterConvert.Insert(cnt + 1, 0x81);
+                        cnt++;
+                        break;
+                    case EOT:
+                        afterConvert[cnt] = 0x1B;
+                        afterConvert.Insert(cnt + 1, 0x84);
+                        cnt++;
+                        break;
+                    case ESC:
+                        afterConvert[cnt] = 0x1B;
+                        afterConvert.Insert(cnt + 1, 0x9B);
+                        cnt++;
+                        break;
+                    default:
+                        break;
+                }
+                cnt++;
+            }
+            return afterConvert;
+        }
+        private List<byte> DecodeSpecial(List<byte> bytelist)
+        {
+            //ushort soh = 0x1B81, eot = 0x1B84, esc = 0x1B9B;
+            List<byte> rst = new List<byte>();
+
+            for (int i = 0; i < bytelist.Count; i++)
+            {
+                if (bytelist[i] != ESC) rst.Add(bytelist[i]);
+                else if ((i + 1) > bytelist.Count && bytelist[i + 1] != 0x81 && bytelist[i + 1] != 0x84 && bytelist[i + 1] != 0x9B) rst.Add(bytelist[i]);
+                else
+                {
+                    if (bytelist[i + 1] == 0x81) { bytelist.RemoveAt(i + 1); rst.Add(SOH); }
+                    else if (bytelist[i + 1] == 0x84) { bytelist.RemoveAt(i + 1); rst.Add(EOT); }
+                    else { bytelist.RemoveAt(i + 1); rst.Add(ESC); }
+                }
+            }
+            return rst;
+        }
+        #endregion
+
         private void FormRoot_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult.OK == MessageBox.Show("不玩了吗?", "温馨提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
@@ -1325,6 +1617,8 @@ namespace CleanProApp
             else
                 e.Cancel = true;
         }
+
+
 
     }
 }

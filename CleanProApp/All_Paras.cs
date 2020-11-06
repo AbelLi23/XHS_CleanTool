@@ -8,15 +8,11 @@ using System.Windows.Forms;
 
 namespace CleanProApp
 {
+    using System.Net.NetworkInformation;
+    using System.Text;
     using AppCfg = CleanProApp.Properties.Settings;
     public class Xprinter
     {
-        #region Printer Interface
-        [DllImport("printer_interface", EntryPoint = "InitInterface")]
-        private static extern int InitInterface(IntPtr handle, int Msg);
-        [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
-        private static extern bool RequestUpgrade(int nTarget, string szRequestRst, IntPtr nBuffLen);
-        #endregion
         //Public
         #region Public
         public Xprinter()
@@ -44,6 +40,8 @@ namespace CleanProApp
         public bool WipeInXdirect = true;
         public bool IsInModifying = false;
         public FormRoot.CleanMode CleanMode;
+        public bool OfflineUse = false;
+        public bool mustReStart = false;
         public string ProcessName = DateTime.Now.ToString("yyMMdd");
         public string[] ParaLabel = { "运转强度", "运转时间", "停止时间", "循环次数", "延时时长" };
         #endregion
@@ -133,6 +131,7 @@ namespace CleanProApp
         public int M_WorkTime = AppCfg.Default.M_WrT_Min;//(0-1000, 999, 1000)
         public int M_HoldTime;
         public int M_CycleNum = 1;
+        public byte M_OnOff = 0x04;
         #endregion
 
         //PumpS
@@ -352,6 +351,98 @@ namespace CleanProApp
                         break;
                 }
             }
+            return true;
+        }
+        [DllImport("kernel32")]
+        private static extern int GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, int nSize, string lpFileName);
+        [DllImport("kernel32")]
+        private static extern int WritePrivateProfileString(string lpApplicationName, string lpKeyName, string lpString, string lpFileName);
+        public string F_ReadINI(string sec, string key, string def, string InINmame)
+        {
+            StringBuilder strbd = new StringBuilder(1024);
+            GetPrivateProfileString(sec, key, def, strbd, 1024, InINmame);
+            return strbd.ToString();
+        }
+        public int F_WriteINI(string sec, string key, string value, string InIName)
+        {
+            if (File.Exists(InIName))
+            {
+                return WritePrivateProfileString(sec, key, value, InIName);
+            }
+            return 0;
+        }
+        #endregion
+
+        //NetWork and printer Interface
+        #region NetWork Set & Printer Interface
+        public bool Net_PingIsOK(string Ip, int time)//ms , int time
+        {
+            if (time == 0) return false;
+            else
+            {
+                Ping send = new Ping();
+                PingReply recv = send.Send(Ip, time);//, time
+                //MessageBox.Show(recv.Status.ToString());
+                bool rsv = (recv.Status == IPStatus.Success) ? true : false;
+                send.Dispose();
+
+                return rsv;
+            }
+        }
+        public byte[] Net_CRC16(List<byte> bylist)
+        {
+            byte[] CRCsum = new byte[] { 0, 0 };
+            if (bylist.Count > 0)
+            {
+                UInt16 wSum = 0;
+                foreach (byte bt in bylist)
+                {
+                    wSum += bt;
+                }
+                CRCsum = new byte[] { (byte)(wSum & 0x00FF), (byte)((wSum & 0xFF00) >> 8) };
+            }
+            return CRCsum;
+        }
+        public string Net_ByteToString(byte[] arr, bool isReverse)
+        {   //2bytes
+            if (arr.Length == 1)
+            {
+                byte bt = arr[0];
+                return Convert.ToString(bt).ToUpper().PadLeft(2, '0');
+            }
+            else
+            {
+                try
+                {
+                    byte hi = arr[0], lo = arr[1];
+                    return Convert.ToString(isReverse ? hi + lo * 0x100 : hi * 0x100 + lo, 16).ToUpper().PadLeft(4, '0');
+                }
+                catch (Exception ex) { throw (ex); }
+            }
+        }
+        //Printer API
+        [DllImport("printer_interface", EntryPoint = "InitInterface")]
+        private static extern int InitInterface(IntPtr handle, uint Msg);
+        [DllImport("printer_interface", EntryPoint = "CloseInterface")]
+        private static extern int CloseInterface();
+
+        [DllImport("printer_interface", EntryPoint = "StartTransferData")]
+        private static extern bool StartTransferData();
+        [DllImport("printer_interface", EntryPoint = "SendData")]
+        private static extern int SendData(byte[] pData, long nLength, int nPortIndex);
+        [DllImport("printer_interface", EntryPoint = "EndTransferData")]
+        private static extern bool EndTransferData();
+
+        [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
+        private static extern bool RequestUpgrade(int nTarget, ref byte[] szRequestRst, ref int nBuffLen);
+
+        public bool EnDBG = true;
+        private bool SetDebugClean(bool enable)
+        {
+            return true;
+        }
+        private bool SendStepCmd(byte[] sglStep)
+        {
             return true;
         }
         #endregion
