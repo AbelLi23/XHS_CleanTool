@@ -49,6 +49,14 @@
             this.btn_NewFile = new System.Windows.Forms.Button();
             this.btn_Modify = new System.Windows.Forms.Button();
             this.gBox_Second = new System.Windows.Forms.GroupBox();
+            this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label_arrTip = new System.Windows.Forms.Label();
             this.pnl_ptype = new System.Windows.Forms.Panel();
             this.label_P_Col = new System.Windows.Forms.Label();
@@ -62,12 +70,17 @@
             this.btn_SecondBack = new System.Windows.Forms.Button();
             this.openProFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.gBox_Third = new System.Windows.Forms.GroupBox();
-            this.pnl_AllPara = new System.Windows.Forms.Panel();
-            this.label_Split = new System.Windows.Forms.Label();
             this.pnl_Para1 = new System.Windows.Forms.Panel();
             this.rBtn_M_Set = new System.Windows.Forms.RadioButton();
             this.rBtn_V_Set = new System.Windows.Forms.RadioButton();
             this.rBtn_N_Set = new System.Windows.Forms.RadioButton();
+            this.pnl_Para2 = new System.Windows.Forms.Panel();
+            this.rBtn_C_Set = new System.Windows.Forms.RadioButton();
+            this.rBtn_P_Set = new System.Windows.Forms.RadioButton();
+            this.rBtn_W_Set = new System.Windows.Forms.RadioButton();
+            this.pnl_AllPara = new System.Windows.Forms.Panel();
+            this.chkBox_WaveFreq = new System.Windows.Forms.CheckBox();
+            this.label_PosUnit = new System.Windows.Forms.Label();
             this.comBox_microPos = new System.Windows.Forms.ComboBox();
             this.btn_microInc = new System.Windows.Forms.Button();
             this.btn_microDec = new System.Windows.Forms.Button();
@@ -79,10 +92,6 @@
             this.label_IntensityV = new System.Windows.Forms.Label();
             this.trkBar_Velocity = new System.Windows.Forms.TrackBar();
             this.btn_TestPos = new System.Windows.Forms.Button();
-            this.pnl_Para2 = new System.Windows.Forms.Panel();
-            this.rBtn_C_Set = new System.Windows.Forms.RadioButton();
-            this.rBtn_P_Set = new System.Windows.Forms.RadioButton();
-            this.rBtn_W_Set = new System.Windows.Forms.RadioButton();
             this.trkBar_CycleNum = new System.Windows.Forms.TrackBar();
             this.trkBar_WaitTime = new System.Windows.Forms.TrackBar();
             this.trkBar_HoldTime = new System.Windows.Forms.TrackBar();
@@ -129,6 +138,7 @@
             this.imageInSteps = new System.Windows.Forms.ImageList(this.components);
             this.btn_SetDat = new System.Windows.Forms.Button();
             this.btn_NewDat = new System.Windows.Forms.Button();
+            this.label_MicUnit = new System.Windows.Forms.Label();
             this.gBox_First.SuspendLayout();
             this.pnl_direct.SuspendLayout();
             this.pnl_mode.SuspendLayout();
@@ -136,10 +146,10 @@
             this.gBox_Second.SuspendLayout();
             this.pnl_ptype.SuspendLayout();
             this.gBox_Third.SuspendLayout();
-            this.pnl_AllPara.SuspendLayout();
             this.pnl_Para1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkBar_Velocity)).BeginInit();
             this.pnl_Para2.SuspendLayout();
+            this.pnl_AllPara.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkBar_Velocity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_CycleNum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_WaitTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_HoldTime)).BeginInit();
@@ -315,7 +325,7 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2,
             this.toolStripStatusLabel1});
-            this.statusStrip.Location = new System.Drawing.Point(0, 699);
+            this.statusStrip.Location = new System.Drawing.Point(0, 1039);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1327, 22);
             this.statusStrip.SizingGrip = false;
@@ -373,6 +383,14 @@
             // 
             // gBox_Second
             // 
+            this.gBox_Second.Controls.Add(this.checkBox8);
+            this.gBox_Second.Controls.Add(this.checkBox7);
+            this.gBox_Second.Controls.Add(this.checkBox6);
+            this.gBox_Second.Controls.Add(this.checkBox5);
+            this.gBox_Second.Controls.Add(this.checkBox4);
+            this.gBox_Second.Controls.Add(this.checkBox3);
+            this.gBox_Second.Controls.Add(this.checkBox2);
+            this.gBox_Second.Controls.Add(this.checkBox1);
             this.gBox_Second.Controls.Add(this.label_arrTip);
             this.gBox_Second.Controls.Add(this.pnl_ptype);
             this.gBox_Second.Controls.Add(this.pnl_P_Array);
@@ -383,10 +401,130 @@
             this.gBox_Second.Margin = new System.Windows.Forms.Padding(0);
             this.gBox_Second.Name = "gBox_Second";
             this.gBox_Second.Padding = new System.Windows.Forms.Padding(0);
-            this.gBox_Second.Size = new System.Drawing.Size(550, 165);
+            this.gBox_Second.Size = new System.Drawing.Size(550, 340);
             this.gBox_Second.TabIndex = 10;
             this.gBox_Second.TabStop = false;
             this.gBox_Second.Text = "确认喷头排列:";
+            // 
+            // checkBox8
+            // 
+            this.checkBox8.AutoSize = true;
+            this.checkBox8.Checked = true;
+            this.checkBox8.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox8.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox8.Location = new System.Drawing.Point(105, 273);
+            this.checkBox8.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox8.Name = "checkBox8";
+            this.checkBox8.Size = new System.Drawing.Size(58, 21);
+            this.checkBox8.TabIndex = 25;
+            this.checkBox8.Text = "墨泵8";
+            this.checkBox8.UseVisualStyleBackColor = true;
+            this.checkBox8.Visible = false;
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.Checked = true;
+            this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox7.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox7.Location = new System.Drawing.Point(105, 252);
+            this.checkBox7.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(58, 21);
+            this.checkBox7.TabIndex = 24;
+            this.checkBox7.Text = "墨泵7";
+            this.checkBox7.UseVisualStyleBackColor = true;
+            this.checkBox7.Visible = false;
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Checked = true;
+            this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox6.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox6.Location = new System.Drawing.Point(105, 231);
+            this.checkBox6.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(58, 21);
+            this.checkBox6.TabIndex = 23;
+            this.checkBox6.Text = "墨泵6";
+            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkBox6.Visible = false;
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Checked = true;
+            this.checkBox5.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox5.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox5.Location = new System.Drawing.Point(105, 210);
+            this.checkBox5.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(58, 21);
+            this.checkBox5.TabIndex = 22;
+            this.checkBox5.Text = "墨泵5";
+            this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.Visible = false;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = true;
+            this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox4.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox4.Location = new System.Drawing.Point(105, 189);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(58, 21);
+            this.checkBox4.TabIndex = 21;
+            this.checkBox4.Text = "墨泵4";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.Visible = false;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Checked = true;
+            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox3.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox3.Location = new System.Drawing.Point(105, 168);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(58, 21);
+            this.checkBox3.TabIndex = 20;
+            this.checkBox3.Text = "墨泵3";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.Visible = false;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox2.Location = new System.Drawing.Point(105, 147);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(58, 21);
+            this.checkBox2.TabIndex = 19;
+            this.checkBox2.Text = "墨泵2";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.Visible = false;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.checkBox1.Location = new System.Drawing.Point(105, 126);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(58, 21);
+            this.checkBox1.TabIndex = 18;
+            this.checkBox1.Text = "墨泵1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Visible = false;
             // 
             // label_arrTip
             // 
@@ -545,7 +683,7 @@
             this.btn_SecondNext.BackgroundImage = global::CleanProApp.Properties.Resources.next;
             this.btn_SecondNext.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_SecondNext.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_SecondNext.Location = new System.Drawing.Point(335, 120);
+            this.btn_SecondNext.Location = new System.Drawing.Point(335, 290);
             this.btn_SecondNext.Margin = new System.Windows.Forms.Padding(0);
             this.btn_SecondNext.Name = "btn_SecondNext";
             this.btn_SecondNext.Size = new System.Drawing.Size(200, 32);
@@ -558,7 +696,7 @@
             this.btn_SecondBack.BackgroundImage = global::CleanProApp.Properties.Resources.back;
             this.btn_SecondBack.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_SecondBack.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_SecondBack.Location = new System.Drawing.Point(15, 120);
+            this.btn_SecondBack.Location = new System.Drawing.Point(15, 290);
             this.btn_SecondBack.Margin = new System.Windows.Forms.Padding(0);
             this.btn_SecondBack.Name = "btn_SecondBack";
             this.btn_SecondBack.Size = new System.Drawing.Size(200, 32);
@@ -568,70 +706,20 @@
             // 
             // gBox_Third
             // 
+            this.gBox_Third.Controls.Add(this.pnl_Para1);
+            this.gBox_Third.Controls.Add(this.pnl_Para2);
             this.gBox_Third.Controls.Add(this.pnl_AllPara);
             this.gBox_Third.Controls.Add(this.btn_ThirdNext);
             this.gBox_Third.Controls.Add(this.btn_ThirdBack);
             this.gBox_Third.Font = new System.Drawing.Font("Microsoft YaHei", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.gBox_Third.Location = new System.Drawing.Point(559, 174);
+            this.gBox_Third.Location = new System.Drawing.Point(559, 356);
             this.gBox_Third.Margin = new System.Windows.Forms.Padding(0);
             this.gBox_Third.Name = "gBox_Third";
             this.gBox_Third.Padding = new System.Windows.Forms.Padding(0);
-            this.gBox_Third.Size = new System.Drawing.Size(550, 525);
+            this.gBox_Third.Size = new System.Drawing.Size(704, 525);
             this.gBox_Third.TabIndex = 11;
             this.gBox_Third.TabStop = false;
             this.gBox_Third.Text = "确认清洗参数并调试:";
-            // 
-            // pnl_AllPara
-            // 
-            this.pnl_AllPara.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.pnl_AllPara.Controls.Add(this.label_Split);
-            this.pnl_AllPara.Controls.Add(this.pnl_Para1);
-            this.pnl_AllPara.Controls.Add(this.comBox_microPos);
-            this.pnl_AllPara.Controls.Add(this.btn_microInc);
-            this.pnl_AllPara.Controls.Add(this.btn_microDec);
-            this.pnl_AllPara.Controls.Add(this.label_microPos);
-            this.pnl_AllPara.Controls.Add(this.label_VelocityV);
-            this.pnl_AllPara.Controls.Add(this.label_CycleNumV);
-            this.pnl_AllPara.Controls.Add(this.label_WaitTimeV);
-            this.pnl_AllPara.Controls.Add(this.label_HoldTimeV);
-            this.pnl_AllPara.Controls.Add(this.label_IntensityV);
-            this.pnl_AllPara.Controls.Add(this.trkBar_Velocity);
-            this.pnl_AllPara.Controls.Add(this.btn_TestPos);
-            this.pnl_AllPara.Controls.Add(this.pnl_Para2);
-            this.pnl_AllPara.Controls.Add(this.trkBar_CycleNum);
-            this.pnl_AllPara.Controls.Add(this.trkBar_WaitTime);
-            this.pnl_AllPara.Controls.Add(this.trkBar_HoldTime);
-            this.pnl_AllPara.Controls.Add(this.chkBox_HoldTime);
-            this.pnl_AllPara.Controls.Add(this.chkBox_SetAsK2);
-            this.pnl_AllPara.Controls.Add(this.btn_SetAxisPara);
-            this.pnl_AllPara.Controls.Add(this.chkBox_SetAsK1);
-            this.pnl_AllPara.Controls.Add(this.btn_SetPumpPara);
-            this.pnl_AllPara.Controls.Add(this.trkBar_Intensity);
-            this.pnl_AllPara.Controls.Add(this.txtBox_Position);
-            this.pnl_AllPara.Controls.Add(this.comBox_Position);
-            this.pnl_AllPara.Controls.Add(this.label_Position);
-            this.pnl_AllPara.Controls.Add(this.label_Velocity);
-            this.pnl_AllPara.Controls.Add(this.label_CycleNum);
-            this.pnl_AllPara.Controls.Add(this.label_WaitTime);
-            this.pnl_AllPara.Controls.Add(this.label_HoldTime);
-            this.pnl_AllPara.Controls.Add(this.label_Intensity);
-            this.pnl_AllPara.Location = new System.Drawing.Point(15, 20);
-            this.pnl_AllPara.Margin = new System.Windows.Forms.Padding(0);
-            this.pnl_AllPara.Name = "pnl_AllPara";
-            this.pnl_AllPara.Size = new System.Drawing.Size(520, 460);
-            this.pnl_AllPara.TabIndex = 9;
-            // 
-            // label_Split
-            // 
-            this.label_Split.Font = new System.Drawing.Font("Microsoft YaHei", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label_Split.Location = new System.Drawing.Point(436, 208);
-            this.label_Split.Margin = new System.Windows.Forms.Padding(0);
-            this.label_Split.Name = "label_Split";
-            this.label_Split.Size = new System.Drawing.Size(59, 17);
-            this.label_Split.TabIndex = 37;
-            this.label_Split.Text = "Split";
-            this.label_Split.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label_Split.Visible = false;
             // 
             // pnl_Para1
             // 
@@ -639,7 +727,7 @@
             this.pnl_Para1.Controls.Add(this.rBtn_M_Set);
             this.pnl_Para1.Controls.Add(this.rBtn_V_Set);
             this.pnl_Para1.Controls.Add(this.rBtn_N_Set);
-            this.pnl_Para1.Location = new System.Drawing.Point(0, 0);
+            this.pnl_Para1.Location = new System.Drawing.Point(546, 20);
             this.pnl_Para1.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_Para1.Name = "pnl_Para1";
             this.pnl_Para1.Size = new System.Drawing.Size(520, 35);
@@ -687,6 +775,125 @@
             this.rBtn_N_Set.UseVisualStyleBackColor = true;
             this.rBtn_N_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para1_CheckedChanged);
             // 
+            // pnl_Para2
+            // 
+            this.pnl_Para2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.pnl_Para2.Controls.Add(this.rBtn_C_Set);
+            this.pnl_Para2.Controls.Add(this.rBtn_P_Set);
+            this.pnl_Para2.Controls.Add(this.rBtn_W_Set);
+            this.pnl_Para2.Location = new System.Drawing.Point(546, 60);
+            this.pnl_Para2.Margin = new System.Windows.Forms.Padding(0);
+            this.pnl_Para2.Name = "pnl_Para2";
+            this.pnl_Para2.Size = new System.Drawing.Size(520, 35);
+            this.pnl_Para2.TabIndex = 23;
+            // 
+            // rBtn_C_Set
+            // 
+            this.rBtn_C_Set.AutoSize = true;
+            this.rBtn_C_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.rBtn_C_Set.Location = new System.Drawing.Point(85, 5);
+            this.rBtn_C_Set.Margin = new System.Windows.Forms.Padding(0);
+            this.rBtn_C_Set.Name = "rBtn_C_Set";
+            this.rBtn_C_Set.Size = new System.Drawing.Size(60, 25);
+            this.rBtn_C_Set.TabIndex = 8;
+            this.rBtn_C_Set.TabStop = true;
+            this.rBtn_C_Set.Text = "墨栈";
+            this.rBtn_C_Set.UseVisualStyleBackColor = true;
+            this.rBtn_C_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
+            // 
+            // rBtn_P_Set
+            // 
+            this.rBtn_P_Set.AutoSize = true;
+            this.rBtn_P_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.rBtn_P_Set.Location = new System.Drawing.Point(230, 5);
+            this.rBtn_P_Set.Margin = new System.Windows.Forms.Padding(0);
+            this.rBtn_P_Set.Name = "rBtn_P_Set";
+            this.rBtn_P_Set.Size = new System.Drawing.Size(60, 25);
+            this.rBtn_P_Set.TabIndex = 7;
+            this.rBtn_P_Set.TabStop = true;
+            this.rBtn_P_Set.Text = "小车";
+            this.rBtn_P_Set.UseVisualStyleBackColor = true;
+            this.rBtn_P_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
+            // 
+            // rBtn_W_Set
+            // 
+            this.rBtn_W_Set.AutoSize = true;
+            this.rBtn_W_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.rBtn_W_Set.Location = new System.Drawing.Point(375, 5);
+            this.rBtn_W_Set.Margin = new System.Windows.Forms.Padding(0);
+            this.rBtn_W_Set.Name = "rBtn_W_Set";
+            this.rBtn_W_Set.Size = new System.Drawing.Size(60, 25);
+            this.rBtn_W_Set.TabIndex = 9;
+            this.rBtn_W_Set.TabStop = true;
+            this.rBtn_W_Set.Text = "刮片";
+            this.rBtn_W_Set.UseVisualStyleBackColor = true;
+            this.rBtn_W_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
+            // 
+            // pnl_AllPara
+            // 
+            this.pnl_AllPara.BackColor = System.Drawing.SystemColors.Control;
+            this.pnl_AllPara.Controls.Add(this.label_MicUnit);
+            this.pnl_AllPara.Controls.Add(this.chkBox_WaveFreq);
+            this.pnl_AllPara.Controls.Add(this.label_PosUnit);
+            this.pnl_AllPara.Controls.Add(this.comBox_microPos);
+            this.pnl_AllPara.Controls.Add(this.btn_microInc);
+            this.pnl_AllPara.Controls.Add(this.btn_microDec);
+            this.pnl_AllPara.Controls.Add(this.label_microPos);
+            this.pnl_AllPara.Controls.Add(this.label_VelocityV);
+            this.pnl_AllPara.Controls.Add(this.label_CycleNumV);
+            this.pnl_AllPara.Controls.Add(this.label_WaitTimeV);
+            this.pnl_AllPara.Controls.Add(this.label_HoldTimeV);
+            this.pnl_AllPara.Controls.Add(this.label_IntensityV);
+            this.pnl_AllPara.Controls.Add(this.trkBar_Velocity);
+            this.pnl_AllPara.Controls.Add(this.btn_TestPos);
+            this.pnl_AllPara.Controls.Add(this.trkBar_CycleNum);
+            this.pnl_AllPara.Controls.Add(this.trkBar_WaitTime);
+            this.pnl_AllPara.Controls.Add(this.trkBar_HoldTime);
+            this.pnl_AllPara.Controls.Add(this.chkBox_HoldTime);
+            this.pnl_AllPara.Controls.Add(this.chkBox_SetAsK2);
+            this.pnl_AllPara.Controls.Add(this.btn_SetAxisPara);
+            this.pnl_AllPara.Controls.Add(this.chkBox_SetAsK1);
+            this.pnl_AllPara.Controls.Add(this.btn_SetPumpPara);
+            this.pnl_AllPara.Controls.Add(this.trkBar_Intensity);
+            this.pnl_AllPara.Controls.Add(this.txtBox_Position);
+            this.pnl_AllPara.Controls.Add(this.comBox_Position);
+            this.pnl_AllPara.Controls.Add(this.label_Position);
+            this.pnl_AllPara.Controls.Add(this.label_Velocity);
+            this.pnl_AllPara.Controls.Add(this.label_CycleNum);
+            this.pnl_AllPara.Controls.Add(this.label_WaitTime);
+            this.pnl_AllPara.Controls.Add(this.label_HoldTime);
+            this.pnl_AllPara.Controls.Add(this.label_Intensity);
+            this.pnl_AllPara.Location = new System.Drawing.Point(15, 20);
+            this.pnl_AllPara.Margin = new System.Windows.Forms.Padding(0);
+            this.pnl_AllPara.Name = "pnl_AllPara";
+            this.pnl_AllPara.Size = new System.Drawing.Size(520, 460);
+            this.pnl_AllPara.TabIndex = 9;
+            // 
+            // chkBox_WaveFreq
+            // 
+            this.chkBox_WaveFreq.AutoSize = true;
+            this.chkBox_WaveFreq.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.chkBox_WaveFreq.Location = new System.Drawing.Point(177, 40);
+            this.chkBox_WaveFreq.Margin = new System.Windows.Forms.Padding(0);
+            this.chkBox_WaveFreq.Name = "chkBox_WaveFreq";
+            this.chkBox_WaveFreq.Size = new System.Drawing.Size(111, 21);
+            this.chkBox_WaveFreq.TabIndex = 38;
+            this.chkBox_WaveFreq.Text = "波形与频率控制";
+            this.chkBox_WaveFreq.UseVisualStyleBackColor = true;
+            this.chkBox_WaveFreq.Visible = false;
+            this.chkBox_WaveFreq.CheckedChanged += new System.EventHandler(this.chkBox_WaveFreq_CheckedChanged);
+            // 
+            // label_PosUnit
+            // 
+            this.label_PosUnit.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_PosUnit.Location = new System.Drawing.Point(364, 326);
+            this.label_PosUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.label_PosUnit.Name = "label_PosUnit";
+            this.label_PosUnit.Size = new System.Drawing.Size(59, 17);
+            this.label_PosUnit.TabIndex = 37;
+            this.label_PosUnit.Text = "Split";
+            this.label_PosUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // comBox_microPos
             // 
             this.comBox_microPos.DropDownHeight = 70;
@@ -712,7 +919,7 @@
             // 
             // btn_microInc
             // 
-            this.btn_microInc.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btn_microInc.BackColor = System.Drawing.SystemColors.Control;
             this.btn_microInc.BackgroundImage = global::CleanProApp.Properties.Resources.Ascend;
             this.btn_microInc.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btn_microInc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -722,10 +929,11 @@
             this.btn_microInc.Size = new System.Drawing.Size(50, 32);
             this.btn_microInc.TabIndex = 35;
             this.btn_microInc.UseVisualStyleBackColor = false;
+            this.btn_microInc.Click += new System.EventHandler(this.btn_TestPos_Click);
             // 
             // btn_microDec
             // 
-            this.btn_microDec.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btn_microDec.BackColor = System.Drawing.SystemColors.Control;
             this.btn_microDec.BackgroundImage = global::CleanProApp.Properties.Resources.Descend;
             this.btn_microDec.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btn_microDec.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -735,6 +943,7 @@
             this.btn_microDec.Size = new System.Drawing.Size(50, 32);
             this.btn_microDec.TabIndex = 34;
             this.btn_microDec.UseVisualStyleBackColor = false;
+            this.btn_microDec.Click += new System.EventHandler(this.btn_TestPos_Click);
             // 
             // label_microPos
             // 
@@ -811,6 +1020,7 @@
             // trkBar_Velocity
             // 
             this.trkBar_Velocity.AutoSize = false;
+            this.trkBar_Velocity.LargeChange = 1;
             this.trkBar_Velocity.Location = new System.Drawing.Point(134, 281);
             this.trkBar_Velocity.Margin = new System.Windows.Forms.Padding(0);
             this.trkBar_Velocity.Name = "trkBar_Velocity";
@@ -820,7 +1030,7 @@
             // 
             // btn_TestPos
             // 
-            this.btn_TestPos.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btn_TestPos.BackColor = System.Drawing.SystemColors.Control;
             this.btn_TestPos.BackgroundImage = global::CleanProApp.Properties.Resources.Test;
             this.btn_TestPos.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btn_TestPos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -832,64 +1042,12 @@
             this.btn_TestPos.Text = "测\r\n试";
             this.btn_TestPos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btn_TestPos.UseVisualStyleBackColor = false;
-            // 
-            // pnl_Para2
-            // 
-            this.pnl_Para2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pnl_Para2.Controls.Add(this.rBtn_C_Set);
-            this.pnl_Para2.Controls.Add(this.rBtn_P_Set);
-            this.pnl_Para2.Controls.Add(this.rBtn_W_Set);
-            this.pnl_Para2.Location = new System.Drawing.Point(0, 230);
-            this.pnl_Para2.Margin = new System.Windows.Forms.Padding(0);
-            this.pnl_Para2.Name = "pnl_Para2";
-            this.pnl_Para2.Size = new System.Drawing.Size(520, 35);
-            this.pnl_Para2.TabIndex = 23;
-            // 
-            // rBtn_C_Set
-            // 
-            this.rBtn_C_Set.AutoSize = true;
-            this.rBtn_C_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_C_Set.Location = new System.Drawing.Point(85, 5);
-            this.rBtn_C_Set.Margin = new System.Windows.Forms.Padding(0);
-            this.rBtn_C_Set.Name = "rBtn_C_Set";
-            this.rBtn_C_Set.Size = new System.Drawing.Size(60, 25);
-            this.rBtn_C_Set.TabIndex = 8;
-            this.rBtn_C_Set.TabStop = true;
-            this.rBtn_C_Set.Text = "墨栈";
-            this.rBtn_C_Set.UseVisualStyleBackColor = true;
-            this.rBtn_C_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
-            // 
-            // rBtn_P_Set
-            // 
-            this.rBtn_P_Set.AutoSize = true;
-            this.rBtn_P_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_P_Set.Location = new System.Drawing.Point(230, 5);
-            this.rBtn_P_Set.Margin = new System.Windows.Forms.Padding(0);
-            this.rBtn_P_Set.Name = "rBtn_P_Set";
-            this.rBtn_P_Set.Size = new System.Drawing.Size(60, 25);
-            this.rBtn_P_Set.TabIndex = 7;
-            this.rBtn_P_Set.TabStop = true;
-            this.rBtn_P_Set.Text = "小车";
-            this.rBtn_P_Set.UseVisualStyleBackColor = true;
-            this.rBtn_P_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
-            // 
-            // rBtn_W_Set
-            // 
-            this.rBtn_W_Set.AutoSize = true;
-            this.rBtn_W_Set.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.rBtn_W_Set.Location = new System.Drawing.Point(375, 5);
-            this.rBtn_W_Set.Margin = new System.Windows.Forms.Padding(0);
-            this.rBtn_W_Set.Name = "rBtn_W_Set";
-            this.rBtn_W_Set.Size = new System.Drawing.Size(60, 25);
-            this.rBtn_W_Set.TabIndex = 9;
-            this.rBtn_W_Set.TabStop = true;
-            this.rBtn_W_Set.Text = "刮片";
-            this.rBtn_W_Set.UseVisualStyleBackColor = true;
-            this.rBtn_W_Set.CheckedChanged += new System.EventHandler(this.rBtn_Para2_CheckedChanged);
+            this.btn_TestPos.Click += new System.EventHandler(this.btn_TestPos_Click);
             // 
             // trkBar_CycleNum
             // 
             this.trkBar_CycleNum.AutoSize = false;
+            this.trkBar_CycleNum.LargeChange = 1;
             this.trkBar_CycleNum.Location = new System.Drawing.Point(134, 169);
             this.trkBar_CycleNum.Margin = new System.Windows.Forms.Padding(0);
             this.trkBar_CycleNum.Name = "trkBar_CycleNum";
@@ -900,6 +1058,7 @@
             // trkBar_WaitTime
             // 
             this.trkBar_WaitTime.AutoSize = false;
+            this.trkBar_WaitTime.LargeChange = 1;
             this.trkBar_WaitTime.Location = new System.Drawing.Point(134, 136);
             this.trkBar_WaitTime.Margin = new System.Windows.Forms.Padding(0);
             this.trkBar_WaitTime.Name = "trkBar_WaitTime";
@@ -910,6 +1069,7 @@
             // trkBar_HoldTime
             // 
             this.trkBar_HoldTime.AutoSize = false;
+            this.trkBar_HoldTime.LargeChange = 1;
             this.trkBar_HoldTime.Location = new System.Drawing.Point(134, 103);
             this.trkBar_HoldTime.Margin = new System.Windows.Forms.Padding(0);
             this.trkBar_HoldTime.Name = "trkBar_HoldTime";
@@ -921,7 +1081,7 @@
             // 
             this.chkBox_HoldTime.AutoSize = true;
             this.chkBox_HoldTime.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.chkBox_HoldTime.Location = new System.Drawing.Point(85, 40);
+            this.chkBox_HoldTime.Location = new System.Drawing.Point(13, 40);
             this.chkBox_HoldTime.Margin = new System.Windows.Forms.Padding(0);
             this.chkBox_HoldTime.Name = "chkBox_HoldTime";
             this.chkBox_HoldTime.Size = new System.Drawing.Size(135, 21);
@@ -984,6 +1144,7 @@
             // trkBar_Intensity
             // 
             this.trkBar_Intensity.AutoSize = false;
+            this.trkBar_Intensity.LargeChange = 1;
             this.trkBar_Intensity.Location = new System.Drawing.Point(134, 70);
             this.trkBar_Intensity.Margin = new System.Windows.Forms.Padding(0);
             this.trkBar_Intensity.Name = "trkBar_Intensity";
@@ -998,6 +1159,7 @@
             this.txtBox_Position.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.txtBox_Position.Location = new System.Drawing.Point(299, 321);
             this.txtBox_Position.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBox_Position.MaxLength = 4;
             this.txtBox_Position.Name = "txtBox_Position";
             this.txtBox_Position.Size = new System.Drawing.Size(65, 26);
             this.txtBox_Position.TabIndex = 15;
@@ -1545,11 +1707,23 @@
             this.btn_NewDat.UseVisualStyleBackColor = true;
             this.btn_NewDat.Click += new System.EventHandler(this.Pak_Or_Update);
             // 
+            // label_MicUnit
+            // 
+            this.label_MicUnit.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_MicUnit.Location = new System.Drawing.Point(364, 367);
+            this.label_MicUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.label_MicUnit.Name = "label_MicUnit";
+            this.label_MicUnit.Size = new System.Drawing.Size(59, 17);
+            this.label_MicUnit.TabIndex = 39;
+            this.label_MicUnit.Text = "Split";
+            this.label_MicUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_MicUnit.Visible = false;
+            // 
             // FormRoot
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1327, 721);
+            this.ClientSize = new System.Drawing.Size(1327, 1061);
             this.Controls.Add(this.btn_SetDat);
             this.Controls.Add(this.btn_NewDat);
             this.Controls.Add(this.gBox_Fourth);
@@ -1578,13 +1752,13 @@
             this.pnl_ptype.ResumeLayout(false);
             this.pnl_ptype.PerformLayout();
             this.gBox_Third.ResumeLayout(false);
-            this.pnl_AllPara.ResumeLayout(false);
-            this.pnl_AllPara.PerformLayout();
             this.pnl_Para1.ResumeLayout(false);
             this.pnl_Para1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trkBar_Velocity)).EndInit();
             this.pnl_Para2.ResumeLayout(false);
             this.pnl_Para2.PerformLayout();
+            this.pnl_AllPara.ResumeLayout(false);
+            this.pnl_AllPara.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkBar_Velocity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_CycleNum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_WaitTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_HoldTime)).EndInit();
@@ -1675,7 +1849,7 @@
         private System.Windows.Forms.TrackBar trkBar_HoldTime;
         private System.Windows.Forms.CheckBox chkBox_SetAsK2;
         private System.Windows.Forms.Button btn_SetAxisPara;
-        private System.Windows.Forms.Label label_Split;
+        private System.Windows.Forms.Label label_PosUnit;
         private System.Windows.Forms.Label label_SerialNum;
         private System.Windows.Forms.TextBox txtBox_SerialNum;
         private System.Windows.Forms.ListView listView_CleanSteps;
@@ -1702,6 +1876,16 @@
         private System.Windows.Forms.Button btn_NewDat;
         private System.Windows.Forms.Button btn_Update;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.CheckBox checkBox8;
+        private System.Windows.Forms.CheckBox checkBox7;
+        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkBox_WaveFreq;
+        private System.Windows.Forms.Label label_MicUnit;
     }
 }
 

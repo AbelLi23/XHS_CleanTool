@@ -7,6 +7,7 @@ namespace CleanProApp
     {
         public int stepId = 0;
         public string DelaySet = string.Empty;
+        bool useK = false;
         public T_Delay(int index)
         {
             this.MaximizeBox = false;
@@ -17,27 +18,30 @@ namespace CleanProApp
             InitializeComponent();
 
             stepId = index; DelaySet = FormRoot.Printer.CleanProcess[index];
+            FormRoot.ExplainAction(DelaySet);
+            useK = (DelaySet.Substring(3, 1) == "0") ? true : false;
 
             trkBar_HoldTime.Maximum = AppCfg.Default.N_Dly_Max; trkBar_HoldTime.Minimum = AppCfg.Default.N_Dly_Min;
-            trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
+            trkBar_HoldTime.LargeChange = trkBar_HoldTime.SmallChange = trkBar_HoldTime.TickFrequency = 1;
 
             label_HoldTime.Text = "延时时间";
-            trkBar_HoldTime.Value = AppCfg.Default.N_Dly_K06;
-            label_HoldTimeV.Text = string.Format("{0}秒", (trkBar_HoldTime.Value * AppCfg.Default.N_Dly_Rto).ToString("#0.0"));
+            trkBar_HoldTime.Value = (useK) ? AppCfg.Default.N_Dly_K006 : FormRoot.Printer.N_WaitTime;
+            label_HoldTimeV.Text = string.Format("{0} 秒", (trkBar_HoldTime.Value * AppCfg.Default.N_Dly_Rto).ToString());
         }
 
         private void QuitAdjustFrm(object sender, System.EventArgs e)
         {
             if ((Button)sender == btn_OK)
             {
-                AppCfg.Default.N_Dly_K06 = trkBar_HoldTime.Value;
+                FormRoot.Printer.N_WaitTime = trkBar_HoldTime.Value;
+                FormRoot.Printer.CleanProcess[stepId] = string.Format("@Nr{0}", FormRoot.Printer.N_WaitTime);
             }
             this.Close();
         }
 
         private void TrackBarValued(object sender, System.EventArgs e)
         {
-            label_HoldTimeV.Text = string.Format("{0}秒", (trkBar_HoldTime.Value * AppCfg.Default.N_Dly_Rto).ToString("#0.0"));
+            label_HoldTimeV.Text = string.Format("{0} 秒", (trkBar_HoldTime.Value * AppCfg.Default.N_Dly_Rto).ToString());
         }
     }
 }

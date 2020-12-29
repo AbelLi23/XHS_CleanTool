@@ -40,6 +40,8 @@
             this.pnl_AjVel = new System.Windows.Forms.Panel();
             this.pnl_AjPos = new System.Windows.Forms.Panel();
             this.chkBox_Zero = new System.Windows.Forms.CheckBox();
+            this.txtBox_Position = new System.Windows.Forms.TextBox();
+            this.label_PosUnit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trkBar_Velocity)).BeginInit();
             this.pnl_AjVel.SuspendLayout();
             this.pnl_AjPos.SuspendLayout();
@@ -202,13 +204,15 @@
             // 
             // pnl_AjPos
             // 
+            this.pnl_AjPos.Controls.Add(this.label_PosUnit);
             this.pnl_AjPos.Controls.Add(this.chkBox_Zero);
+            this.pnl_AjPos.Controls.Add(this.txtBox_Position);
             this.pnl_AjPos.Controls.Add(this.label_Position);
             this.pnl_AjPos.Controls.Add(this.comBox_Position);
             this.pnl_AjPos.Location = new System.Drawing.Point(9, 85);
             this.pnl_AjPos.Margin = new System.Windows.Forms.Padding(0);
             this.pnl_AjPos.Name = "pnl_AjPos";
-            this.pnl_AjPos.Size = new System.Drawing.Size(170, 66);
+            this.pnl_AjPos.Size = new System.Drawing.Size(170, 93);
             this.pnl_AjPos.TabIndex = 47;
             // 
             // chkBox_Zero
@@ -223,6 +227,29 @@
             this.chkBox_Zero.Text = "原点";
             this.chkBox_Zero.UseVisualStyleBackColor = true;
             this.chkBox_Zero.CheckedChanged += new System.EventHandler(this.chkBox_Zero_CheckedChanged);
+            // 
+            // txtBox_Position
+            // 
+            this.txtBox_Position.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_Position.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.txtBox_Position.ImeMode = System.Windows.Forms.ImeMode.Alpha;
+            this.txtBox_Position.Location = new System.Drawing.Point(18, 63);
+            this.txtBox_Position.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBox_Position.MaxLength = 4;
+            this.txtBox_Position.Name = "txtBox_Position";
+            this.txtBox_Position.Size = new System.Drawing.Size(65, 23);
+            this.txtBox_Position.TabIndex = 48;
+            // 
+            // label_PosUnit
+            // 
+            this.label_PosUnit.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_PosUnit.Location = new System.Drawing.Point(93, 66);
+            this.label_PosUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.label_PosUnit.Name = "label_PosUnit";
+            this.label_PosUnit.Size = new System.Drawing.Size(59, 17);
+            this.label_PosUnit.TabIndex = 49;
+            this.label_PosUnit.Text = "mm";
+            this.label_PosUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // X_Painter
             // 
@@ -263,5 +290,7 @@
         private System.Windows.Forms.Panel pnl_AjVel;
         private System.Windows.Forms.Panel pnl_AjPos;
         private System.Windows.Forms.CheckBox chkBox_Zero;
+        private System.Windows.Forms.TextBox txtBox_Position;
+        private System.Windows.Forms.Label label_PosUnit;
     }
 }

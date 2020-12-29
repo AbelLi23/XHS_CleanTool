@@ -32,6 +32,8 @@
             this.label_Position = new System.Windows.Forms.Label();
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.btn_OK = new System.Windows.Forms.Button();
+            this.label_PosUnit = new System.Windows.Forms.Label();
+            this.txtBox_Position = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // comBox_Position
@@ -72,6 +74,7 @@
             this.comBox_Position.Name = "comBox_Position";
             this.comBox_Position.Size = new System.Drawing.Size(134, 25);
             this.comBox_Position.TabIndex = 16;
+            this.comBox_Position.SelectedIndexChanged += new System.EventHandler(this.comBox_Position_SelectedIndexChanged);
             // 
             // label_Position
             // 
@@ -109,11 +112,36 @@
             this.btn_OK.UseVisualStyleBackColor = true;
             this.btn_OK.Click += new System.EventHandler(this.QuitAdjustFrm);
             // 
+            // label_PosUnit
+            // 
+            this.label_PosUnit.Font = new System.Drawing.Font("Microsoft YaHei", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_PosUnit.Location = new System.Drawing.Point(200, 123);
+            this.label_PosUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.label_PosUnit.Name = "label_PosUnit";
+            this.label_PosUnit.Size = new System.Drawing.Size(59, 17);
+            this.label_PosUnit.TabIndex = 51;
+            this.label_PosUnit.Text = "(0-255) * 1024 pulse";
+            this.label_PosUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtBox_Position
+            // 
+            this.txtBox_Position.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_Position.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.txtBox_Position.ImeMode = System.Windows.Forms.ImeMode.Alpha;
+            this.txtBox_Position.Location = new System.Drawing.Point(125, 120);
+            this.txtBox_Position.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBox_Position.MaxLength = 4;
+            this.txtBox_Position.Name = "txtBox_Position";
+            this.txtBox_Position.Size = new System.Drawing.Size(65, 23);
+            this.txtBox_Position.TabIndex = 50;
+            // 
             // Z_Stage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 238);
+            this.Controls.Add(this.label_PosUnit);
+            this.Controls.Add(this.txtBox_Position);
             this.Controls.Add(this.btn_Cancel);
             this.Controls.Add(this.btn_OK);
             this.Controls.Add(this.comBox_Position);
@@ -134,5 +162,7 @@
         private System.Windows.Forms.Label label_Position;
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_OK;
+        private System.Windows.Forms.Label label_PosUnit;
+        private System.Windows.Forms.TextBox txtBox_Position;
     }
 }

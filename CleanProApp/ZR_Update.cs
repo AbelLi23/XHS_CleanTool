@@ -22,6 +22,7 @@ namespace CleanProApp
             InitializeComponent();
 
             this.Size = new Size(420, 300);
+            pnl_FileIn.Visible = false;
             pnl_update.Location = pnl_toDat.Location;
             txt_fileIn.ReadOnly = txt_pdat.ReadOnly = txt_ptxt.ReadOnly = true;
             if (pakFirst)
@@ -35,6 +36,10 @@ namespace CleanProApp
                 txt_pdat.Text = "清洗数据包文件";
             }
             this.textBox1_MouseDown(null, null);
+        }
+        private void txt_fileIn_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.All;
         }
         private void textBox1_DragEnter(object sender, DragEventArgs e)
         {
@@ -133,8 +138,10 @@ namespace CleanProApp
                 fs.Seek(0, SeekOrigin.Begin);
                 StreamReader sr = new StreamReader(fs);
                 DATA = sr.ReadToEnd();
-                bool SendSuccess = FormRoot.Printer.F_SendDatToPrt(DATA);
-                MessageBox.Show(SendSuccess ? "数据包已成功上传" : "上传失败", "提示:", MessageBoxButtons.OK, SendSuccess ? MessageBoxIcon.Asterisk : MessageBoxIcon.Error);
+                bool otherEx = false;
+                bool SendSuccess = FormRoot.Printer.F_SendDatToPrt(DATA, ref otherEx);
+                MessageBox.Show(SendSuccess ? "数据包已成功上传" : otherEx ? string.Format("当前主板状态不支持升级，请检查") :
+                    "上传失败", "提示:", MessageBoxButtons.OK, SendSuccess ? MessageBoxIcon.Asterisk : MessageBoxIcon.Error);
             }
         }
     }

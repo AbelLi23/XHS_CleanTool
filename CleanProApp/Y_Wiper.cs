@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace CleanProApp
 {
+    using AppCfg = CleanProApp.Properties.Settings;
     public partial class Y_Wiper : Form
     {
         public int lstId = 0;
@@ -29,10 +30,13 @@ namespace CleanProApp
             if (!IsNew)
             {
                 WiperSet = FormRoot.Printer.CleanProcess[index];
-                if (0 == int.Parse(WiperSet.Trim('@', ';').Substring(2))) chkBox_Zero.Checked = true;
+                if (WiperSet.Trim('@', ';').Substring(0, 1) == "H")
+                {
+                    comBox_Position.SelectedIndex = int.Parse(WiperSet.Trim('@', ';').Substring(1, 1)) - 1;
+                }
                 else
                 {
-                    comBox_Position.SelectedIndex = int.Parse(WiperSet.Trim('@', ';').Substring(2)) - 1;
+                    chkBox_Zero.Checked = true; // Here only used "Wn0";
                 }
             }
         }
@@ -53,9 +57,33 @@ namespace CleanProApp
                         MessageBox.Show("必须选择有效的刮片位置", "提示:", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                         return;
                     }
-                    if (IsInsert) FormRoot.Printer.CleanProcess.Insert(lstId + 1, string.Format("@Wn{0};", comBox_Position.SelectedIndex + 1));
+                    if (IsInsert)
+                    {
+                        bool rst = false; int tmpVal = 0; int Pos = 0;
+                        rst = int.TryParse(txtBox_Position.Text, out tmpVal);
+                        if (tmpVal < AppCfg.Default.W_Pos_Min || tmpVal > AppCfg.Default.W_Pos_Max || !rst)
+                        {
+                            MessageBox.Show("刮片位置值无效", "Warn!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        Pos = FormRoot.Printer.W_YPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
+                        FormRoot.Printer.CleanProcess.Insert(lstId + 1, string.Format("@H{0}{1};",
+                                comBox_Position.SelectedIndex + 1, Pos));
+                    }
                     else
-                        FormRoot.Printer.CleanProcess[lstId] = string.Format("@Wn{0};", comBox_Position.SelectedIndex + 1);
+                    {
+                        bool rst = false; int tmpVal = 0; int Pos = 0;
+                        rst = int.TryParse(txtBox_Position.Text, out tmpVal);
+                        if (tmpVal < AppCfg.Default.W_Pos_Min || tmpVal > AppCfg.Default.W_Pos_Max || !rst)
+                        {
+                            MessageBox.Show("刮片位置值无效", "Warn!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        Pos = FormRoot.Printer.W_YPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
+                        FormRoot.Printer.CleanProcess[lstId] = string.Format("@H{0}{1};",
+                                comBox_Position.SelectedIndex + 1, Pos);
+                    }
+
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -68,7 +96,14 @@ namespace CleanProApp
 
         private void chkBox_Zero_CheckedChanged(object sender, System.EventArgs e)
         {
-            comBox_Position.Enabled = !chkBox_Zero.Checked;
+            comBox_Position.Enabled = txtBox_Position.Enabled = !chkBox_Zero.Checked;
+        }
+
+        private void comBox_Position_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            if (comBox_Position.SelectedIndex == -1) return;
+
+            txtBox_Position.Text = FormRoot.Printer.W_YPos[comBox_Position.SelectedIndex].ToString();
         }
     }
 }

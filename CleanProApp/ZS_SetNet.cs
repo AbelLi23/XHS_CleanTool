@@ -133,6 +133,7 @@ namespace CleanProApp
             Thread.Sleep(100);
             //var stat = InitInterface(this.Handle, 0);
             var stat = FormRoot.Printer.Net_PingIsOK(SetPrtIP, 0);//, 2000
+            Thread.Sleep(1000);
             if (!stat)
             {
                 timer1.Enabled = true;

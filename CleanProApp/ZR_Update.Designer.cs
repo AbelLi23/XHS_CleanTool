@@ -65,6 +65,7 @@
             this.txt_fileIn.WordWrap = false;
             this.txt_fileIn.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
             this.txt_fileIn.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
+            this.txt_fileIn.DragOver += new System.Windows.Forms.DragEventHandler(this.txt_fileIn_DragOver);
             this.txt_fileIn.MouseDown += new System.Windows.Forms.MouseEventHandler(this.textBox1_MouseDown);
             // 
             // label_fileIn

@@ -10,6 +10,7 @@ namespace CleanProApp
 {
     using System.Net.NetworkInformation;
     using System.Text;
+    using System.Threading;
     using AppCfg = CleanProApp.Properties.Settings;
     public class Xprinter
     {
@@ -44,17 +45,18 @@ namespace CleanProApp
         public bool mustReStart = false;
         public string ProcessName = DateTime.Now.ToString("yyMMdd");
         public string[] ParaLabel = { "运转强度", "运转时间", "停止时间", "循环次数", "延时时长" };
+        public string[] OrderNum = { "全功率运转", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ", "Ⅵ", "Ⅶ", "Ⅷ", "Ⅸ" };
         #endregion
 
         //Painter
         #region Painter
         public string p_IndexStr;
-        public string P_Type = " ";
+        public string P_Type = "XHS";
         public int P_Counts = 1;
-        public int P_Speed = 0;//(0-100)
+        public int P_Speed = AppCfg.Default.P_Vel_Min;//(0-100)
         public List<int> P_XPos = new List<int>(9 * 9 * 2);//(0-1000000)
         public List<Label> P_Array = new List<Label>();
-        public void P_AnalyzeArray()
+        public void P_AnalyzeArray(ref bool UnValid)
         {
             //Extrapolated index string
             List<Label> lblarr = new List<Label>();
@@ -65,8 +67,24 @@ namespace CleanProApp
                     lblarr.Add(lbl);
                 }
             }
-            P_Counts = (int)lblarr.Count;
+            if (lblarr.Count <= 0)
+            {
+                //MessageBox.Show("当前没有喷头!", "提示", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                UnValid = true; return;
+            }
+            else UnValid = false;
+            List<ushort> txtNum = new List<ushort>();
+            for (int i = 0; i < lblarr.Count; i++)
+            {
+                ushort tmp = 0;
+                ushort.TryParse(lblarr[i].Text.Substring(0, 1), out tmp);
+                txtNum.Add(tmp);
+            }
+            //var maxNum = txtNum.Max();
+            UnValid = (txtNum.Count < txtNum.Max()) ? true : false;
+            if (UnValid) return;
 
+            P_Counts = (int)lblarr.Count;
             char[] ptarr = new char[lblarr.Count];
             char[] ptarr2 = new char[lblarr.Count];
             for (int i = 0; i < lblarr.Count; i++)
@@ -105,6 +123,19 @@ namespace CleanProApp
                 }
             }
             CleanSequence = sqc;
+
+            //Estimated PumpM enable
+            byte ms_byte = 0x00; byte cl_byte = 0x01;
+            for (int i = 0; i < M_PumpMs.Count; i++)
+            {
+                if (M_PumpMs[i].Visible == true && M_PumpMs[i].Checked == true)
+                {
+                    int tmpInt = cl_byte << i;
+                    byte tmpByte = Convert.ToByte(tmpInt & 0xFF);
+                    ms_byte = Convert.ToByte(ms_byte | tmpByte);
+                }
+            }
+            M_OnOff = ms_byte;
         }
         #endregion
 
@@ -112,13 +143,13 @@ namespace CleanProApp
         #region Wiper
         public string w_IndexStr;
         public bool W_Enable = true, WC_Enable = false;
-        public int W_Speed = 0;
+        public int W_Speed = AppCfg.Default.W_Vel_Min;
         public List<int> W_YPos = new List<int>(9 * 9 * 2);//(0-10)
         #endregion
 
         //Stage
         #region Stage
-        public int C_Speed = 0;
+        public int C_Speed = AppCfg.Default.C_Vel_Min;
         public string[] C_LevelMark = { "吸墨", "刮墨", "打印", "原点", "闪喷" };
         public List<int> C_Level = new List<int>(5);//(0-9)
         #endregion
@@ -127,24 +158,25 @@ namespace CleanProApp
         #region PumpM
         public bool M_OnlyTime = false;
         public int M_OnlyWorkTime = AppCfg.Default.M_Ttt_Min;
-        public int M_Strength = 1;
+        public int M_Strength = AppCfg.Default.M_Pow_Min;
         public int M_WorkTime = AppCfg.Default.M_WrT_Min;//(0-1000, 999, 1000)
-        public int M_HoldTime;
-        public int M_CycleNum = 1;
-        public byte M_OnOff = 0x04;
+        public int M_HoldTime = AppCfg.Default.M_SpT_Min;
+        public int M_CycleNum = AppCfg.Default.M_Cyc_Min;
+        public byte M_OnOff = 0x00;
+        public List<CheckBox> M_PumpMs = new List<CheckBox>();
         #endregion
 
         //PumpS
         #region PumpS
-        public int V_Strength = 1;
-        public int V_WorkTime;
-        public int V_HoldTime;
-        public int V_CycleNum = 1;
+        public int V_Strength = AppCfg.Default.V_Pow_Min;
+        public int V_WorkTime = AppCfg.Default.V_WrT_Min;
+        public int V_HoldTime = AppCfg.Default.V_SpT_Min;
+        public int V_CycleNum = AppCfg.Default.V_Cyc_Min;
         #endregion
 
         //Delay
         #region Delay
-        public int N_WaitTime = 1;//(0, 1-1000)
+        public int N_WaitTime = AppCfg.Default.N_Dly_Min;//(0, 1-1000)
         #endregion
 
         //Actual Process Document Info
@@ -213,9 +245,46 @@ namespace CleanProApp
 
             return DATHead + DATBody;
         }
-        public bool F_SendDatToPrt(string fileName)
+        public bool F_SendDatToPrt(string fdata, ref bool BoardEx)
         {
-            return false;
+            int datPort = int.Parse(F_ReadINI("Channel0Param", "DataPort", "", ZS_SetNet.INIFile));
+            if (InitInterface(IntPtr.Zero, 0) == 0) return false;
+            byte[] buff = new byte[6]; int bufflen = buff.Length;
+            while ((buff[4] != 'U' || buff[5] != 'P'))
+            {
+                RequestUpgrade(1, buff, ref bufflen);
+                Thread.Sleep(100);
+                if ((buff[4] != 'U' && buff[5] != 'S'))
+                { BoardEx = true; return false; }
+            }
+            //if (!RequestUpgrade(1, buff, ref bufflen)) return false;
+            Thread.Sleep(100);
+            if (!StartTransferData()) return false;
+            Thread.Sleep(100);
+            byte[] data = { 0xAA, 0xAA, 0xAA, 0xAA };
+
+            int rst = SendData(data, data.Length, datPort);
+            if (rst == 0) return false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (rst == 2) rst = SendData(data, data.Length, datPort);
+                Thread.Sleep(100);
+            }
+            if (rst == 0) return false;
+
+            byte[] fdatabyts = Encoding.ASCII.GetBytes(fdata);
+            int frst = SendData(fdatabyts, fdatabyts.Length, datPort);
+            if (frst == 0) return false;
+            for (int i = 0; i < 3; i++)
+            {
+                if (frst == 2) rst = SendData(fdatabyts, fdatabyts.Length, datPort);
+                Thread.Sleep(100);
+            }
+            if (frst == 0) return false;
+
+            EndTransferData();
+            CloseInterface();
+            return true;
         }
         public bool F_AnalyzeProcess(List<string> actions)
         {
@@ -247,107 +316,85 @@ namespace CleanProApp
                         P_Type = detail.Substring(1, 1);
                         ProcessName = detail.Substring(2);
                         break;
-                    case "K":
-                        var Kxxx = int.Parse(detail.Substring(2, 3));
-                        switch (Kxxx)
+                    case "x":
+                        if (detail.Substring(1, 2) == "PV") AppCfg.Default.P_Vel_Kppp = int.Parse(detail.Substring(3));
+                        else if (detail.Substring(1, 2) == "PL")
                         {
-                            case 6:
-                                AppCfg.Default.N_Dly_K06 = int.Parse(detail.Substring(5));
-                                break;
-                            case 7:
-                                AppCfg.Default.V_Cyc_Kvv = int.Parse(detail.Substring(5));
-                                break;
-                            case 8:
-                                AppCfg.Default.C_Vel_K08 = int.Parse(detail.Substring(5));
-                                break;
-                            case 10:
-                                AppCfg.Default.M_Cyc_K10 = int.Parse(detail.Substring(5));
-                                break;
-                            case 12:
-                                AppCfg.Default.C_Pos2_K12 = int.Parse(detail.Substring(5));
-                                break;
-                            case 22:
-                                AppCfg.Default.M_Ttt_K22 = int.Parse(detail.Substring(5));
-                                break;
-                            case 26:
-                                AppCfg.Default.C_Pos1_K26 = int.Parse(detail.Substring(5));
-                                break;
-                            case 30:
-                                AppCfg.Default.M_SpT_K30 = int.Parse(detail.Substring(5));
-                                break;
-                            case 55:
-                                AppCfg.Default.W_Vel_K55 = int.Parse(detail.Substring(5));
-                                break;
-                            case 56:
-                                AppCfg.Default.M_Pow_K56 = int.Parse(detail.Substring(5));
-                                break;
-                            case 59:
-                                AppCfg.Default.C_Pos4_K59 = int.Parse(detail.Substring(5));
-                                break;
-                            case 74:
-                                AppCfg.Default.V_WrT_Kvv = int.Parse(detail.Substring(5));
-                                break;
-                            case 0:
-                                break;
+                            if (detail.Length < 4) continue;
+                            string[] ploc = detail.Substring(4).Split(','); int ppos = 0;
+                            for (int i = 0; i < ploc.Length; i++)
+                            {
+                                int.TryParse(ploc[i], out ppos);
+                                P_XPos[i] = ppos;
+                            }
                         }
+                        else if (detail.Substring(1, 2) == "WL")
+                        {
+                            if (detail.Length < 4) continue;
+                            string[] wloc = detail.Substring(4).Split(','); int wpos = 0;
+                            for (int i = 0; i < wloc.Length; i++)
+                            {
+                                int.TryParse(wloc[i], out wpos);
+                                W_YPos[i] = wpos;
+                            }
+                        }
+                        else if (detail.Substring(1, 2) == "VP") AppCfg.Default.V_Pow_Kvvv = int.Parse(detail.Substring(3));
+                        else if (detail.Substring(1, 2) == "VB") AppCfg.Default.V_WrT_Kvvv = int.Parse(detail.Substring(3));
+                        else if (detail.Substring(1, 2) == "VE") AppCfg.Default.V_SpT_Kvvv = int.Parse(detail.Substring(3));
+                        else if (detail.Substring(1, 2) == "VW") AppCfg.Default.V_Wav_Tvvv = int.Parse(detail.Substring(3));
+                        else { p_IndexStr = act; }
+                        break;
+                    case "K":
+                        var Kxxx = detail.Substring(2, 3);
+                        if (FormRoot.NameOf(() => AppCfg.Default.W_Vel_K055).Substring(FormRoot.NameOf(() => AppCfg.Default.W_Vel_K055).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.W_Vel_K055 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.C_Vel_K008).Substring(FormRoot.NameOf(() => AppCfg.Default.C_Vel_K008).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.C_Vel_K008 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.C_Pos0_K999).Substring(FormRoot.NameOf(() => AppCfg.Default.C_Pos0_K999).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.C_Pos0_K999 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.C_Pos1_K026).Substring(FormRoot.NameOf(() => AppCfg.Default.C_Pos1_K026).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.C_Pos1_K026 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.C_Pos2_K012).Substring(FormRoot.NameOf(() => AppCfg.Default.C_Pos2_K012).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.C_Pos2_K012 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.C_Pos4_K059).Substring(FormRoot.NameOf(() => AppCfg.Default.C_Pos4_K059).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.C_Pos4_K059 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.M_Pow_K056).Substring(FormRoot.NameOf(() => AppCfg.Default.M_Pow_K056).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.M_Pow_K056 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.M_WrT_K029).Substring(FormRoot.NameOf(() => AppCfg.Default.M_WrT_K029).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.M_WrT_K029 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.M_SpT_K030).Substring(FormRoot.NameOf(() => AppCfg.Default.M_SpT_K030).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.M_SpT_K030 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.M_Cyc_K010).Substring(FormRoot.NameOf(() => AppCfg.Default.M_Cyc_K010).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.M_Cyc_K010 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.M_Ttt_K022).Substring(FormRoot.NameOf(() => AppCfg.Default.M_Ttt_K022).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.M_Ttt_K022 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.V_Cyc_K007).Substring(FormRoot.NameOf(() => AppCfg.Default.V_Cyc_K007).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.V_Cyc_K007 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.V_Frq_K074).Substring(FormRoot.NameOf(() => AppCfg.Default.V_Frq_K074).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.V_Frq_K074 = int.Parse(detail.Substring(6));
+                        else if (FormRoot.NameOf(() => AppCfg.Default.N_Dly_K006).Substring(FormRoot.NameOf(() => AppCfg.Default.N_Dly_K006).Length - 3, 3) == Kxxx)
+                            AppCfg.Default.N_Dly_K006 = int.Parse(detail.Substring(6));
+                        else { ;}
                         break;
                     case "w":
                         P_Counts = detail.Trim('w', '0').Length;
                         w_IndexStr = act;
                         break;
-                    case "x":
-                        p_IndexStr = act;
-                        break;
                     case "P":
-                        if ("p" == detail.Substring(1, 1))
-                        {
-                            int.TryParse(detail.Substring(2), out P_Speed);
-                            AppCfg.Default.P_Vel_Kpp = P_Speed;
-                        }
-                        else if ("0" == detail.Substring(1, 1))
-                        {
-                            ;
-                        }
-                        else
-                        {
-                            if (FormRoot.CleanMode.W0C_PP == CleanMode || FormRoot.CleanMode.W1_C_PP == CleanMode || FormRoot.CleanMode.W1C_PP == CleanMode)
-                            {
-                                var pn = int.Parse(detail.Substring(1, 1));
-                                if (P_XPos[2 * pn - 2] == 0) P_XPos[2 * pn - 2] = int.Parse(detail.Substring(2));
-                                else P_XPos[2 * pn - 1] = int.Parse(detail.Substring(2));
-                            }
-                            else
-                            {
-                                var pn = int.Parse(detail.Substring(1, 1));
-                                P_XPos[pn - 1] = int.Parse(detail.Substring(2));
-                            }
-                        }
-                        break;
+                    //上述分析已经包含
                     case "W":
-                        if ("n" == detail.Substring(1, 1))
-                        {
-                            ;
-                        }
-                        else
-                        {
-                            var wn = int.Parse(detail.Substring(1, 1));
-                            W_YPos[wn - 1] = int.Parse(detail.Substring(2));
-                        }
-                        break;
+                    //上述分析已经包含
                     case "C":
-                        //从K指令中获取信息
-                        break;
+                    //上述分析已经包含
                     case "M":
-                        //从K指令中获取信息
-                        break;
+                    //上述分析已经包含
                     case "V":
-                        //从K指令中获取信息
-                        break;
+                    //上述分析已经包含
                     case "N":
-                        //从K指令中获取信息
-                        break;
+                    //上述分析已经包含
                     case "E":
-                        //无可用信息
+                    //无可用信息
+                    default:
                         break;
                 }
             }
@@ -434,7 +481,7 @@ namespace CleanProApp
         private static extern bool EndTransferData();
 
         [DllImport("printer_interface", EntryPoint = "RequestUpgrade")]
-        private static extern bool RequestUpgrade(int nTarget, ref byte[] szRequestRst, ref int nBuffLen);
+        private static extern bool RequestUpgrade(int nTarget, byte[] szRequestRst, ref int nBuffLen);
 
         public bool EnDBG = true;
         private bool SetDebugClean(bool enable)

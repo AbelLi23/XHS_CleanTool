@@ -13,6 +13,8 @@ namespace CleanProApp
         public int PN = 0;
         public int StepIndex = 0;
         public bool IsInsert = false;
+        enum ATTR_P { VEL, POS };
+        ATTR_P pattr;
         public X_Painter(int index, bool IsNew)
         {
             this.MaximizeBox = false;
@@ -23,7 +25,7 @@ namespace CleanProApp
             InitializeComponent();
             //trkBar_Velocity
             trkBar_Velocity.Maximum = AppCfg.Default.P_Vel_Max; trkBar_Velocity.Minimum = AppCfg.Default.P_Vel_Min;
-            trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
+            trkBar_Velocity.LargeChange = trkBar_Velocity.SmallChange = trkBar_Velocity.TickFrequency = 1;
             trkBar_Velocity.Value = trkBar_Velocity.Minimum;
 
             //comBox_Position
@@ -65,7 +67,7 @@ namespace CleanProApp
                 btn_OK.Visible = btn_Cancel.Visible = true;
 
                 trkBar_Velocity.Value = int.Parse(PainterSet.Trim('@', ';').Substring(2));
-                label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+                label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.00") + @" m/s";
             }
             else
             {
@@ -94,25 +96,53 @@ namespace CleanProApp
                 pnl_AjVel.Visible = true; pnl_AjPos.Visible = false;
                 btn_OK.Visible = btn_Cancel.Visible = true;
                 trkBar_Velocity.Value = trkBar_Velocity.Minimum;
+                pattr = ATTR_P.VEL;
             }
             else
             {
                 btn_AjVel.Visible = btn_AjPos.Visible = false;
                 pnl_AjPos.Visible = true; pnl_AjVel.Visible = false;
                 btn_OK.Visible = btn_Cancel.Visible = true;
+                pattr = ATTR_P.POS;
             }
         }
         private void QuitAdjustFrm(object sender, System.EventArgs e)
         {
             if (btn_OK == (Button)sender)
             {
-                if ("p" == PainterSet.Trim('@', ';').Substring(1, 1))
+                if (IsInsert)
+                {
+                    switch (pattr)
+                    {
+                        case ATTR_P.VEL:
+                            PainterSet = string.Format("@Pp{0};", trkBar_Velocity.Value);
+                            break;
+                        case ATTR_P.POS:
+                            bool rst = false; int tmpVal = 0;
+                            rst = int.TryParse(txtBox_Position.Text, out tmpVal);
+                            Pos = FormRoot.Printer.P_XPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
+                            PainterSet = (chkBox_Zero.Checked) ? string.Format("@P00;") : string.Format("@P{0}{1};", PN, Pos);
+                            break;
+                    }
+                }
+                else if ("p" == PainterSet.Trim('@', ';').Substring(1, 1))
                 {
                     PainterSet = string.Format("@Pp{0};", trkBar_Velocity.Value);
                 }
                 else
                 {
-                    PainterSet = (chkBox_Zero.Checked) ? string.Format("@P00;") : string.Format("@P{0}{1};", PN, Pos);
+                    bool rst = false; int tmpVal = 0;
+                    if (comBox_Position.SelectedItem != null)
+                    {
+                        rst = int.TryParse(txtBox_Position.Text, out tmpVal);
+                        Pos = FormRoot.Printer.P_XPos[comBox_Position.SelectedIndex] = rst ? tmpVal : 0;
+                        PainterSet = (chkBox_Zero.Checked) ? string.Format("@P00;") : string.Format("@P{0}{1};", PN, Pos);
+                    }
+                    else
+                    {
+                        MessageBox.Show("必须选择有效的小车位置", "提示:", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        return;
+                    }
                 }
                 //FormRoot.Printer.CleanProcess.Insert(IsInsert ? StepIndex + 1 : StepIndex, PainterSet);
                 if (IsInsert) FormRoot.Printer.CleanProcess.Insert(StepIndex + 1, PainterSet);
@@ -126,12 +156,12 @@ namespace CleanProApp
         }
         private void chkBox_Zero_CheckedChanged(object sender, System.EventArgs e)
         {
-            comBox_Position.Enabled = !chkBox_Zero.Checked;
+            comBox_Position.Enabled = txtBox_Position.Enabled = !chkBox_Zero.Checked;
         }
 
         private void trkBar_Velocity_ValueChanged(object sender, System.EventArgs e)
         {
-            label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.0") + "(m/s)";
+            label_VelocityV.Text = (AppCfg.Default.P_Vel_Rto * trkBar_Velocity.Value).ToString("#0.00") + @" m/s";
         }
 
         private void comBox_Position_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -146,6 +176,7 @@ namespace CleanProApp
             else
                 PN = comBox_Position.SelectedIndex + 1;
             Pos = FormRoot.Printer.P_XPos[comBox_Position.SelectedIndex];
+            txtBox_Position.Text = Pos.ToString();
         }
     }
 }
